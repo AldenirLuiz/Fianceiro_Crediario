@@ -25,52 +25,64 @@ class Janela:
             # cria a aba no notebook com o nome predefinido na lista de nomes
             self.noteBook.add(self.widgets[index], text=index) # text=index> index: nome predefinido na lista de nomes
         
-
+####### ESTA CLASSE E RESPONSAVEL POR CRIAR UMA GRADE DINAMICA DE |FRAMES|WIDGETS| ####### 
 class subGrade:
     def __init__(self, notebook, tWidget) -> None:
         self.message = 'Testando: Os alores \nForam Gravados com Sucesso!'
         self.tipoWidget = tWidget
+        self.widgetPack = dict()
+
         self.celNomesL0 = { # estes dicionarios predefinidos formam as celulas ou 'CARDS' dos widgets,
             'data da rota':['nome darota\t\t:', 'data da rota\t\t:'], 
             'retorno':['data para retorno\t:']}
         self.celNomesL1 = { # a posicao dos widgets depende da ordem dos itens
-            'cobranca':['saldo cobrado\t:', 'repasse. cobrado\t:', 'total cobrado\t:'], 
+            'cobranca':['saldo cobrado\t:', 'repasse cobrado\t:', 'total cobrado\t:'], 
             'capital de giro':['venda anterior\t:', 'devolucao de rua\t:', 'total vendido\t\t:']}
-        self.celNomesL2 = { 
+        self.celNomesL2 = { # a distribuicao dos cards se faz por meio das chaves
             'saldo devedor':['repasse novo\t\t:', 'repasse total\t\t:'], 
             'deposito':['compra deposito\t:', 'entrega deposito\t:']}
-        self.celNomesL3 = {
+        self.celNomesL3 = { # cada lista como [valor] contem os nomes dos widgets a serem criados.
             'fichas':['fichas novas\t\t:', 'fichas repasse\t\t:', 'fichas em branco\t:', 'total fichas\t\t:'], 
             'mercadoria na rua':['venda nova\t\t:', 'brindes\t\t\t:', 'vl fichas branco\t:', 'total na rua\t\t:']}
         self.celNomesL4 = {
             'despesas':['despesa rota\t\t:', 'despesa extra\t\t:']}
+
+    ####################### |CARDS DO LAYOUT| #######################
         # Frame data da rota e retorno
         self.framePai0 = Frame(notebook)
-        Layout.dispense(self.framePai0, self.celNomesL0, self.tipoWidget, desc='dados da cobranca')
+        self.widgetPack.update(Layout.dispense(self, pai=self.framePai0, celulas=self.celNomesL0, tWid=self.tipoWidget, desc='dados da cobranca'))
         self.framePai0.grid(row=0, column=0)
+
         # Frame dos cards cobranca e capitial se giro
         self.framePai0 = Frame(notebook)
-        Layout.dispense(self.framePai0, self.celNomesL1, self.tipoWidget)
+        self.widgetPack.update(Layout.dispense(self, self.framePai0, self.celNomesL1, self.tipoWidget))
         self.framePai0.grid(row=1, column=0)
+
         # Frame dos cards dados da rota e capitial se giro
         self.framePai2 = Frame(notebook)
-        Layout.dispense(self.framePai2, self.celNomesL2, self.tipoWidget)
+        self.widgetPack.update(Layout.dispense(self, self.framePai2, self.celNomesL2, self.tipoWidget))
         self.framePai2.grid(row=2, column=0)
+
         # Frame dos cards saldo devedor e deposito
         self.framePai3 = Frame(notebook)
-        Layout.dispense(self.framePai3, self.celNomesL3, self.tipoWidget)
+        self.widgetPack.update(Layout.dispense(self, self.framePai3, self.celNomesL3, self.tipoWidget))
         self.framePai3.grid(row=3, column=0)
+
         # Frame dos cards fichas e mercadoria na rua
         self.framePai4 = Frame(notebook, relief='groove')
-        self.framePai4.grid(row=4, column=0,)
+        # OS WIDGETS DESTA FRAME SERAO POSTOS NA FUNCAO typeWidget
+        self.framePai4.grid(row=4, column=0,) 
 
-
+    #######CONFIGURACOES DA GRADE DO LAYOUT (TIPOS DE WIDGET SECUNDARIOS)#######
     def typeWidget(self, subWidget):
-        if subWidget == 'text':
+
+        # ESTA CONDICAO VERIFICA O TIPO DE WIDGET REQUERIDO
+        if subWidget == 'text': # Neste caso "text" adiciona widget de caixa de texto no espaco reservado do layout
             self.subCellWid = Text(self.framePai4, width=36, height=8)
             self.subCellWid.insert(0.0, 'OBSERVACOES:') # textbox para observacoes
             
-            return Layout.dispense(self.framePai4, self.celNomesL4, self.tipoWidget, subwidget=self.subCellWid)
+            self.widgetPack.update(Layout.dispense(self, self.framePai4, self.celNomesL4, self.tipoWidget, subwidget=self.subCellWid))
+        
         elif subWidget == 'botao':
             self.frmBtt = Frame(self.framePai4)
 
@@ -82,44 +94,86 @@ class subGrade:
 
             self.subButonWid1 = Button(self.frmBtt, text='Cadastrar Valores',bg='green')
             self.subButonWid1.pack(side='right', pady=4, ipadx=2, ipady=2)
-            
-            return Layout.dispense(self.framePai4, self.celNomesL4, self.tipoWidget, subwidget=self.frmBtt)
-        else:
-            return Layout.dispense(self.framePai4, self.celNomesL4, self.tipoWidget)
-        
+
+            self.widgetPack['btts'] = {'btt1': self.subButonWid1, 'btt0' : self.subButonWid0}
+            self.widgetPack.update(Layout.dispense(self, self.framePai4, self.celNomesL4, tWid=self.tipoWidget, subwidget=self.frmBtt))
+    
 
 class Layout:
-    def dispense(pai, celulas, tWid, desc=None, subwidget=None):
-        dictWidgets = dict()
+
+    @staticmethod
+    def dispense(self, pai, celulas, tWid, desc=None, subwidget=None):
+
+        dictEntryWidget = dict()
+
         if desc:
             labelCobranca = Label(pai, text=desc.upper(), anchor='center')
             labelCobranca.pack()
+
         for desc, celula in celulas.items():
             frm0 = Frame(pai, relief='groove', bd=2)
+
             label = Label(frm0, text=desc.upper())
             label.pack()
+
             for widget in celula:
+                nome = str(widget).replace('\t', '')
+
                 frm1 = Frame(frm0)
+
                 textoStatico = Label(frm1, text=widget.upper(),width=20, relief='flat')
                 textoStatico.grid(row=1, column=0, padx=4, pady=4, ipadx=2, ipady=2)
-                textoEntrada = tWid(frm1, text='000000',width=16, relief='groove')
-                textoEntrada.grid(row=1, column=1, padx=4, pady=4, ipadx=2, ipady=2)
-                dictWidgets[f'{tWid}{widget}'] = textoEntrada
+
+                if tWid == 'entry':
+                    widget = Entry(frm1, width=16, relief='groove', name=nome)
+                    widget.grid(row=1, column=1, padx=4, pady=4, ipadx=2, ipady=2)
+
+                    dictEntryWidget[f'{nome}'] = widget
+                    
+                else:
+                    widget = Label(frm1, text='100000',width=16, relief='groove', name=nome)
+                    widget.grid(row=1, column=1, padx=4, pady=4, ipadx=2, ipady=2)
+
+                    dictEntryWidget[f'{nome}'] = widget
+                    
                 frm1.pack(anchor='w')
+
             if subwidget:
                 subwidget.pack(side='right', expand='yes', fill='both', padx=4, pady=4, ipadx=2, ipady=2)
+            
             frm0.pack(side='left', padx=4, pady=4, ipadx=2, ipady=2,anchor='n')
-        return dictWidgets
+
+        return dictEntryWidget
 
 
-class Manipulador(Janela):
+class Manipulador(Janela, subGrade, Layout):
     def __init__(self) -> None:
         super().__init__()
-        self.janelaCob = subGrade(self.widgets['Cobrancas'], Label)
-        self.valEntry = self.janelaCob.typeWidget('text')
-        self.janelaCad = subGrade(self.widgets['Cadastros'], Entry)
+
+        self.janelaCob = subGrade(self.widgets['Cobrancas'], 'label')
+        self.valText = self.janelaCob.typeWidget('text')
+
+        self.janelaCad = subGrade(self.widgets['Cadastros'], 'entry')
         self.valEntry = self.janelaCad.typeWidget('botao')
 
+        self.valEntry['btts']['btt0'].configure(command=lambda: self.comander(self.valEntry))
+        self.valEntry['btts']['btt1'].configure(command=lambda: self.comander('delete'))
+        
+    def comander(self, widgets):
+
+        if isinstance(widgets, str):
+            for keyWidget in widgets.keys():
+                if keyWidget != 'btts':
+                    widgets[keyWidget].delete(0, END)
+                else: continue
+        else:
+            for keyWidget in widgets.keys():
+                if keyWidget != 'btts':
+                    widgetText = widgets[keyWidget].get()
+                    widgets[keyWidget].delete(0, END)
+                else: continue
+
+        
 
 if __name__ == '__main__':
     main = Manipulador()
