@@ -1,14 +1,56 @@
 
+import os
 import sqlite3
 from sqlite3 import Error
 
 
+class Diretorio:
+    """ |retDirApp>retorna o caminho absoluto da pasta de execucao do script<|retDirApp|
+        |retListApp>cria um log com os dados detalhados do diretorio atual<|retListApp|
+        |retListApp retorna o nome do arquivo .log criado<|"""
+
+    @staticmethod
+    def retDirApp( ) -> str :
+        dados = str( os.path.dirname( __file__ ) )
+        return dados
+
+    @staticmethod
+    def retListApp( ) -> str :
+        dirName = str( 'dirLog.log' )
+        os.system( f'dir >>{ dirName }' )
+        return dirName
+
+
 class BancoDados:
-    def __init__(self, banco) -> None:
+    def __init__( self, **kwargs ) -> None:
         
-        self.bancoDados = sqlite3.connect(f'{banco}.db')
-        self.bancoDados.row_factory = sqlite3.Row
-        self.cursor = self.bancoDados.cursor()
+        ### obtendo o caminho de execucao do script ###
+        self.execDir = str( Diretorio.retDirApp( ) )
+        ### obtendo o caminho do log do diretorio ###
+        self.logDir = str( Diretorio.retListApp( ) )
+
+        ### obtendo o nome do banco de dados solicitado ###
+        self.nomeBanco = kwargs.get( 'banco' )
+        self.bancoDados = sqlite3.connect( f'{ self.execDir }\\{ self.nomeBanco }.db' )
+        self.bancoDados.row_factory = sqlite3.Row # <-|todas as requisicoes serao retornadas como dict()|
+        self.cursor = self.bancoDados.cursor( )
+
+    #### ESTA FUNCAO DEVE SER CAPAZ DE GERNCIAR TODAS AS REQUISICOES FEITAS AO BAQNCO DE DADOS ####
+    def gerente( self, **kwargs ):
+
+        self.dadosEntrada = kwargs.get( 'dados' ) # <-|representacao dos dados de entrada a serem processados|
+        print( self.nomeBanco ) # <-|codigo moleta, exibe no terminal os dados a serem gravados|
+        print( self.execDir )
+
+        with open(f'{self.execDir}\\{str(self.logDir)}', 'r') as caminho:
+            
+            logLines = caminho.readlines() #<- representacao das linhas do arquivo .log
+            #<- percorrendo linhas no log
+            if f'{self.nomeBanco}.db' in str(logLines):
+                print( 'banco existe' ) # <-|codigo moleta, exibe no terminal os dados a serem gravados|
+            else:
+                print( 'banco inexistente' ) # <-|codigo moleta, exibe no terminal os dados a serem gravados|
+
 
     def criarTabela(self, nomeTabela,  dados):
         '''obs: O argumento (dados) deve conter dados validos para o banco de dados. 
@@ -58,6 +100,7 @@ class BancoDados:
         self.bancoDados.commit()
         print('dados apagados')
 
+    @classmethod
     def consultaDados(self, nomeTabela, dados):
         for x in self.pegarDados(nomeTabela):
             try:
@@ -69,7 +112,7 @@ class BancoDados:
         else: return True
 
 
-teste = BancoDados('teste')
+#teste = BancoDados('teste')
 
 #teste.criarTabela('Vendedores', "'Nome', 'Idade', 'Sexo'")
 #print((teste.inserirDados("Vendedores", {'Nome':'Aldenir', 'Idade':28, 'Sexo':'Masculino'})))
@@ -79,10 +122,10 @@ teste = BancoDados('teste')
 
 
 #print(teste.pegarDados('Vendedores', dado="Nome='Aldenir'"))
-for dado in teste.pegarDados('Vendedores'):
+'''for dado in teste.pegarDados('Vendedores'):
     try:
         for key, value in dict(dado).items():
             print(f'|\t{key}\t: {value}')
     except ValueError as erro:
         print(dado)
-        print(erro)
+        print(erro)'''

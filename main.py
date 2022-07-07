@@ -1,6 +1,8 @@
 
 from tkinter import *
 from tkinter import ttk
+from mainFunc import BancoDados as db
+
 
 class Janela:
     def __init__(self) -> None:
@@ -97,7 +99,11 @@ class subGrade:
 
             self.widgetPack['btts'] = {'btt1': self.subButonWid1, 'btt0' : self.subButonWid0}
             self.widgetPack.update(Layout.dispense(self, self.framePai4, self.celNomesL4, tWid=self.tipoWidget, subwidget=self.frmBtt))
-    
+        else:
+            self.widgetPack.update(Layout.dispense(self, self.framePai4, self.celNomesL4, tWid=self.tipoWidget))
+        
+        return self.widgetPack
+
 
 class Layout:
 
@@ -155,26 +161,37 @@ class Manipulador(Janela, subGrade, Layout):
 
         self.janelaCad = subGrade(self.widgets['Cadastros'], 'entry')
         self.valEntry = self.janelaCad.typeWidget('botao')
-
-        self.valEntry['btts']['btt0'].configure(command=lambda: self.comander(self.valEntry))
-        self.valEntry['btts']['btt1'].configure(command=lambda: self.comander('delete'))
+        
+        self.valEntry['btts']['btt1'].configure(command=lambda: self.comander(self.valEntry))
+        self.valEntry['btts']['btt0'].configure(command=lambda: self.comander('delete'))
         
     def comander(self, widgets):
 
+        dictValues = dict()
+        tableName = str()
+
         if isinstance(widgets, str):
-            for keyWidget in widgets.keys():
+            for keyWidget in self.valEntry.keys():
                 if keyWidget != 'btts':
-                    widgets[keyWidget].delete(0, END)
+                    self.valEntry[keyWidget].delete(0, END)
                 else: continue
         else:
-            for keyWidget in widgets.keys():
+            for keyWidget in self.valEntry.keys():
                 if keyWidget != 'btts':
-                    widgetText = widgets[keyWidget].get()
-                    widgets[keyWidget].delete(0, END)
+                    widgetText = self.valEntry[keyWidget].get()
+                    if keyWidget == '':
+                        tableName = str(keyWidget)
+                    dictValues[keyWidget] = widgetText
+                    #print(widgetText)
                 else: continue
+        self.dbDados(tableName, dictValues, 'add')
 
-        
+    def dbDados(self, tabela, dados, query):
+        banco = db(banco='dadosCobranca')
+        if query == 'add':
+            banco.gerente(banco='dadosCobranca', tabela=tabela, dados=dados,)
 
 if __name__ == '__main__':
     main = Manipulador()
     main.window.mainloop()
+
