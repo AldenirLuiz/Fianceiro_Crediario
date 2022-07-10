@@ -151,7 +151,6 @@ class Gerente( BancoDados ):
         else:
             return False
 
-
 ######## MANTER ESTAS LINHA COMO TEST DRIVER DO BANCO ########
 #teste = BancoDados( 'teste' )
 #print( teste.consultaDados( 'Vendedores' ) )
