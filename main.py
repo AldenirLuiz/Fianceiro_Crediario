@@ -1,7 +1,7 @@
 
 from tkinter import *
 from tkinter import ttk
-from mainFunc import BancoDados as db
+from mainFunc import Gerente as Gb
 
 
 class Janela:
@@ -89,13 +89,13 @@ class subGrade:
             self.frmBtt = Frame(self.framePai4)
 
             self.subCellWid = Label(self.frmBtt, text=self.message, fg='green', width=34, height=4)
-            self.subCellWid.pack(expand='yes', fill='both', pady=4, ipadx=2, ipady=2)
+            self.subCellWid.pack(expand='yes', fill='both', pady=2, ipadx=2, ipady=2)
 
             self.subButonWid0 = Button(self.frmBtt, text='Limpar Campos',bg='orange')
-            self.subButonWid0.pack(side='left', pady=4, ipadx=2, ipady=2)
+            self.subButonWid0.pack(side='left', pady=2, ipadx=2, ipady=2)
 
             self.subButonWid1 = Button(self.frmBtt, text='Cadastrar Valores',bg='green')
-            self.subButonWid1.pack(side='right', pady=4, ipadx=2, ipady=2)
+            self.subButonWid1.pack(side='right', pady=2, ipadx=2, ipady=2)
 
             self.widgetPack['btts'] = {'btt1': self.subButonWid1, 'btt0' : self.subButonWid0}
             self.widgetPack.update(Layout.dispense(self, self.framePai4, self.celNomesL4, tWid=self.tipoWidget, subwidget=self.frmBtt))
@@ -128,26 +128,26 @@ class Layout:
                 frm1 = Frame(frm0)
 
                 textoStatico = Label(frm1, text=widget.upper(),width=20, relief='flat')
-                textoStatico.grid(row=1, column=0, padx=4, pady=4, ipadx=2, ipady=2)
+                textoStatico.grid(row=1, column=0, padx=2, pady=2, ipadx=2, ipady=2)
 
                 if tWid == 'entry':
                     widget = Entry(frm1, width=16, relief='groove', name=nome)
-                    widget.grid(row=1, column=1, padx=4, pady=4, ipadx=2, ipady=2)
+                    widget.grid(row=1, column=1, padx=2, pady=2, ipadx=2, ipady=2)
 
                     dictEntryWidget[f'{nome}'] = widget
                     
                 else:
                     widget = Label(frm1, text='100000',width=16, relief='groove', name=nome)
-                    widget.grid(row=1, column=1, padx=4, pady=4, ipadx=2, ipady=2)
+                    widget.grid(row=1, column=1, padx=2, pady=2, ipadx=2, ipady=2)
 
                     dictEntryWidget[f'{nome}'] = widget
                     
                 frm1.pack(anchor='w')
 
             if subwidget:
-                subwidget.pack(side='right', expand='yes', fill='both', padx=4, pady=4, ipadx=2, ipady=2)
+                subwidget.pack(side='right', expand='yes', fill='both', padx=2, pady=2, ipadx=2, ipady=2)
             
-            frm0.pack(side='left', padx=4, pady=4, ipadx=2, ipady=2,anchor='n')
+            frm0.pack(side='left', padx=2, pady=2, ipadx=2, ipady=2,anchor='n')
 
         return dictEntryWidget
 
@@ -162,15 +162,15 @@ class Manipulador(Janela, subGrade, Layout):
         self.janelaCad = subGrade(self.widgets['Cadastros'], 'entry')
         self.valEntry = self.janelaCad.typeWidget('botao')
         
-        self.valEntry['btts']['btt1'].configure(command=lambda: self.comander(self.valEntry))
+        self.valEntry['btts']['btt1'].configure(command=lambda: self.comander('add'))
         self.valEntry['btts']['btt0'].configure(command=lambda: self.comander('delete'))
         
-    def comander(self, widgets):
+    def comander(self, command) -> None:
 
         dictValues = dict()
         tableName = str()
 
-        if isinstance(widgets, str):
+        if command == 'delete':
             for keyWidget in self.valEntry.keys():
                 if keyWidget != 'btts':
                     self.valEntry[keyWidget].delete(0, END)
@@ -179,17 +179,12 @@ class Manipulador(Janela, subGrade, Layout):
             for keyWidget in self.valEntry.keys():
                 if keyWidget != 'btts':
                     widgetText = self.valEntry[keyWidget].get()
-                    if keyWidget == '':
-                        tableName = str(keyWidget)
                     dictValues[keyWidget] = widgetText
-                    #print(widgetText)
                 else: continue
-        self.dbDados(tableName, dictValues, 'add')
-
-    def dbDados(self, tabela, dados, query):
-        banco = db(banco='dadosCobranca')
-        if query == 'add':
-            banco.gerente(banco='dadosCobranca', tabela=tabela, dados=dados,)
+        tableName = str(self.valEntry['nome darota:'].get())
+        
+        gerente = Gb( banco='dadosCobranca' )
+        gerente.gerente( banco='dadosCobranca', tabela=tableName, dados=dictValues, query='add' )
 
 if __name__ == '__main__':
     main = Manipulador()
