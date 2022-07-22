@@ -35,7 +35,7 @@ class subGrade:
         self.widgetPack = dict()
 
         self.celNomesL0 = { # estes dicionarios predefinidos formam as celulas ou 'CARDS' dos widgets,
-            'data da rota':['nome darota\t\t:', 'data da rota\t\t:'], 
+            'data da rota':['nome da rota\t\t:', 'data da rota\t\t:'], 
             'retorno':['data para retorno\t:']}
         self.celNomesL1 = { # a posicao dos widgets depende da ordem dos itens
             'cobranca':['saldo cobrado\t:', 'repasse cobrado\t:', 'total cobrado\t:'], 
@@ -166,9 +166,35 @@ class Manipulador(Janela, subGrade, Layout):
         self.valEntry['btts']['btt0'].configure(command=lambda: self.comander('delete'))
         
     def comander(self, command) -> None:
-
+        
+        ######SIMULACAO DE UMA ENTRADA DE DADOS PADRAO#######
+        dictDados = {
+            'nome da rota:': 'Campina', 
+            'data da rota:': '21072022', 
+            'dataretorno': '21032022',
+            'valcobrado': '10000', 
+            'repcobrado': '1000', 
+            'totcobrado': '11000',
+            'repnovo': '1000', 
+            'reptotal': '2000', 
+            'fxnova': '40',
+            'fxbranco': '1', 
+            'fxrepasse': '2', 
+            'fxtotal': '43',
+            'vndanterior': '30000', 
+            'devrua': '10000', 
+            'totvendido': '20000',
+            'cmpdeposito': '30000', 
+            'entdeposito': '10000', 
+            'vndnova': '30000',
+            'brindes': '1000', 
+            'flfxbranco': '1000', 
+            'totrua': '31000',
+            'desprota': '1000', 
+            'dspextra': '1000'}
+        ########################<---->########################
+        
         dictValues = dict()
-        tableName = str()
 
         if command == 'delete':
             for keyWidget in self.valEntry.keys():
@@ -181,11 +207,11 @@ class Manipulador(Janela, subGrade, Layout):
                     widgetText = self.valEntry[keyWidget].get()
                     dictValues[keyWidget] = widgetText
                 else: continue
-        tableName = str(self.valEntry['nome darota:'].get())
         
-        gerente = Gb( banco='dadosCobranca' )
-        gerente.gerente( banco='dadosCobranca', tabela=tableName, dados=dictValues, query='add' )
-
+        gerente = Gb( banco='dadosCobranca' ) 
+        gerente.gerente( dados=dictDados, query='add' )
+        # PARA USAR OS DADOS DE ENTRADA DA GUI SUBSTITUIR (dictDados) POR (dictValues)
+        
 if __name__ == '__main__':
     main = Manipulador()
     main.window.mainloop()
