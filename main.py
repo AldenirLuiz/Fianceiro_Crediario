@@ -44,7 +44,7 @@ class subGrade:
             'saldo devedor':['repasse novo\t\t:', 'repasse total\t\t:'], 
             'deposito':['compra deposito\t:', 'entrega deposito\t:']}
         self.celNomesL3 = { # cada lista como [valor] contem os nomes dos widgets a serem criados.
-            'fichas':['fichas novas\t\t:', 'fichas repasse\t\t:', 'fichas em branco\t:', 'total fichas\t\t:'], 
+            'fichas':['fichas novas\t\t:', 'fichas  repasse\t\t:', 'fichas em branco\t:', 'total fichas\t\t:'], 
             'mercadoria na rua':['venda nova\t\t:', 'brindes\t\t\t:', 'vl fichas branco\t:', 'total na rua\t\t:']}
         self.celNomesL4 = {
             'despesas':['despesa rota\t\t:', 'despesa extra\t\t:']}
