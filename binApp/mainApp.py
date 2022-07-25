@@ -1,8 +1,9 @@
-
 from tkinter import *
 from tkinter import ttk
-from tkinter.messagebox import askokcancel, showerror, showinfo, WARNING, showwarning
-from manageBd import Gerente as Gb
+from tkinter.messagebox import showinfo, WARNING, showwarning
+from binApp.manageBd import Gerente as Gb
+
+
 
 ######SIMULACAO DE UMA ENTRADA DE DADOS PADRAO#######
 dictDados = {
@@ -183,6 +184,7 @@ class Manipulador(Janela, subGrade, Layout):
     def __init__(self) -> None:
         super().__init__()
 
+        self.gerente = Gb( banco='dadosCobranca.db' )
         self.janelaCob = subGrade(self.widgets['Cobrancas'], 'label')
         self.valText = self.janelaCob.typeWidget('text')
 
@@ -207,16 +209,11 @@ class Manipulador(Janela, subGrade, Layout):
                     dictValues[keyWidget] = widgetText
                 else: continue
         
-        gerente = Gb( banco='dadosCobranca.db' )
-        queryState = gerente.gerenteBd( dados=dictDados, query='add' )
+        queryState = self.gerente.gerenteBd( dados=dictValues, query='add' )
         if queryState != 'dados inseridos':
             warningWindow = showwarning(title="ATENÇÃO!", message=f'{queryState}', icon=WARNING)
             pass
         else:
             warningWindow = showinfo(title="TUDO OK", message=f'{queryState}')
-        # PARA USAR OS DADOS DE ENTRADA DA GUI SUBSTITUIR (dictDados) POR (dictValues)
+        #PARA USAR OS DADOS DE ENTRADA DA GUI SUBSTITUIR (dictDados) POR (dictValues)
         
-if __name__ == '__main__':
-    main = Manipulador()
-    main.window.mainloop()
-

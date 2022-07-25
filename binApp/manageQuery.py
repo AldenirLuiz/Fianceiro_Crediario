@@ -2,7 +2,7 @@
 import os
 import sqlite3
 from sqlite3 import Error
-import manageDir as mdir
+from binApp import manageDir as mdir
 
 ''' Aldenir luiz| 22/07/2022
     Prezado Contribuidor, por favor nao remover funcoes nao utilizadas!
@@ -40,7 +40,7 @@ class BancoDados:
             # o return é uma string apenas para confirmar que as alteracoes foram feitas
             return 'Os Dados Foram Inseridos'
         except Error as erro: # tratamento em caso de erros nos dados, como uma tabela ja existente. 
-            print(erro)
+            print(f"Erro Ao inserir dados: ErrValue: {erro}")
             # retorna uma string alertando que as alteracoes nao foram feitas, a descricao do erro vai anexada.
             return f'Erro! Os Dados Nao Foram Inseridos\n{ erro }'
 
