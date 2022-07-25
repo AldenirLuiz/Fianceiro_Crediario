@@ -8,7 +8,7 @@ cursor = conn.cursor()
 
 
 dictDados = {
-    'nome': 'Campina', 'datarota': '21072022', 'dataretorno': '21032022',
+    'nome da rota:': 'Campina', 'data da rota:': '21072022', 'dataretorno': '21032022',
     'valcobrado': '10000', 'repcobrado': '1000', 'totcobrado': '11000',
     'repnovo': '1000', 'reptotal': '2000', 'fxnova': '40',
     'fxbranco': '1', 'fxrepasse': '2', 'fxtotal': '43',
