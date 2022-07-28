@@ -52,8 +52,8 @@ class BancoDados:
             # condicao que verifica se o BANCO esta vazio
             if str( tables ) == '[]':
                 return { "erro":'Banco de Dados Vazio!' }
-            
-            if dado: # se o argumento dado for passado, uma busca e executada
+            # se o argumento dado for passado, uma busca e executada
+            if dado: 
                 # o fluxo do programa sera desviada para consultaDados(), 
                 if self.consultaDados( nomeTabela, dado ): # o fluxo retorna confirmando ou nao a existencia dos dados
                     retData = self.cursor.execute( f"SELECT * FROM { nomeTabela } where { dado }" )
@@ -63,7 +63,6 @@ class BancoDados:
             else: # se o argumento dado nao for passado, uma busca geral e executada
                 retData = self.cursor.execute( f"SELECT * FROM '{ nomeTabela }'" )
                 return retData.fetchall()
-            
         except Error as erro: # em caso de erro, a funcao nao continua.
             print(erro)
             # retorna uma string alertando que aconsulta nao pode ser feita, a descricao do erro vai anexada.

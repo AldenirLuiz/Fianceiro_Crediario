@@ -9,7 +9,6 @@ class Gerente():
         self._diretorio = manageDir.Diretorio
         ### definindo o log de pasta ###
         self._logger = manageDir.Logger
-        
         ### obtendo o caminho do log do diretorio ###
         self.logDir = f"{self._logger.retListApp( )}"
         ### obtendo o nome do Banco ###
@@ -21,11 +20,9 @@ class Gerente():
        
     #### ESTA FUNCAO DEVE SER CAPAZ DE GERNCIAR TODAS AS REQUISICOES FEITAS AO BANCO DE DADOS ####
     def gerenteBd(self, **kwargs):
-        
         ### recuperando dados da requisicao ###
         dados = kwargs.get('dados')
         query = kwargs.get('query') # Tipo de requisicao.
-        
         # A tabela sera nomeada com base em ( nome e data ) vindo dos dados.
         tabela = f"{dados['nome da rota:']}{dados['data da rota:']}"
         if query == 'add': # se o tipo da query for adicionar.
@@ -37,7 +34,6 @@ class Gerente():
                     return 'dados inseridos' # retorno de operacao bem suscedida
                 else: # retorno de operacao mal suscedida
                     return f'ERRO DE OPERACAO! \n{statusQuery}'
-                    
                     
     ### CONSULTOR BANCO DE DADOS##              
     def verBanco(self, nomebanco) -> bool:
@@ -51,7 +47,6 @@ class Gerente():
             print('Bd nao encontrado')
             pass
                 
-    
     ### CONSULTOR TABELA###         
     def verTabela( self, nometabela ) -> bool:
         if self.banco.consultaDados( nometabela ):

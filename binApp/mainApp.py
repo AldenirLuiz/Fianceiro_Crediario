@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter.messagebox import showinfo, WARNING, showwarning
 from binApp.manageBd import Gerente as Gb
 from teste import dictDados
-
+from binApp.mainLayout import Layout
 
 class Janela:
     def __init__(self) -> None:
@@ -33,7 +33,7 @@ class Janela:
 ####### ESTA CLASSE E RESPONSAVEL POR CRIAR UMA GRADE DINAMICA DE |FRAMES|WIDGETS| ####### 
 class subGrade:
     def __init__(self, notebook, tWidget) -> None:
-        self.message = 'Testando: Os alores \nForam Gravados com Sucesso!'
+        self.message = 'VERIFIQUE OS DADOS ANTES \nDE SALVAR.'
         self.tipoWidget = tWidget
         self.widgetPack = dict()
         # A substituicao dos dados nestes dicionarios implica diretamente no aspecto geral do programa. 
@@ -60,28 +60,24 @@ class subGrade:
     ####################### |CARDS DO LAYOUT| #######################
         # Frame data da rota e retorno
         self.framePai0 = Frame(notebook)
-        self.widgetPack.update(
-            Layout.dispense(self, pai=self.framePai0, 
-                            celulas=self.celNomesL0, 
-                            tWid=self.tipoWidget, desc='dados da cobranca'))
+        self.widgetPack.update(Layout.creatLay( pai=self.framePai0, 
+                          celulas=self.celNomesL0, 
+                          tWid=self.tipoWidget, desc='dados da cobranca'))
         self.framePai0.grid(row=0, column=0)
         # Frame dos cards cobranca e capitial se giro
         self.framePai0 = Frame(notebook)
-        self.widgetPack.update(
-            Layout.dispense(self, self.framePai0, self.celNomesL1, 
-                            self.tipoWidget))
+        lay1 = Layout.creatLay(self.framePai0, self.celNomesL1, self.tipoWidget)
+        self.widgetPack.update(lay1)
         self.framePai0.grid(row=1, column=0)
         # Frame dos cards dados da rota e capitial se giro
         self.framePai2 = Frame(notebook)
-        self.widgetPack.update(
-            Layout.dispense(self, self.framePai2, self.celNomesL2, 
-                            self.tipoWidget))
+        lay2 = Layout.creatLay(self.framePai2, self.celNomesL2, self.tipoWidget)
+        self.widgetPack.update(lay2)
         self.framePai2.grid(row=2, column=0)
         # Frame dos cards saldo devedor e deposito
         self.framePai3 = Frame(notebook)
-        self.widgetPack.update(
-            Layout.dispense(self, self.framePai3, self.celNomesL3, 
-                            self.tipoWidget))
+        lay3 = Layout.creatLay(self.framePai3, self.celNomesL3, self.tipoWidget)
+        self.widgetPack.update(lay3)
         self.framePai3.grid(row=3, column=0)
         # Frame dos cards fichas e mercadoria na rua
         self.framePai4 = Frame(notebook, relief='groove')
@@ -93,90 +89,38 @@ class subGrade:
         # ESTA CONDICAO VERIFICA O TIPO DE WIDGET REQUERIDO
         if subWidget == 'text': # Neste caso "text" adiciona widget de caixa de texto \
                                     # no espaco reservado do layout
-            self.subCellWid = Text(self.framePai4, width=36, height=8)
+            self.subCellWid = Text(self.framePai4, width=34, height=4)
             self.subCellWid.insert(0.0, 'OBSERVACOES:') # textbox para observacoes
             # o widget gerado nesta condicao e adicionado ao container de widgets
-            self.widgetPack.update(
-                Layout.dispense( # Empacotando os widgets criados pela classe Layout()
-                    self, self.framePai4, self.celNomesL4, 
-                    self.tipoWidget, subwidget=self.subCellWid))
+            lay0 = Layout.creatLay( # Empacotando os widgets criados pela classe Layout
+                    self.framePai4, self.celNomesL4, 
+                    self.tipoWidget, subwidget=self.subCellWid)
+            self.widgetPack.update(lay0)
         elif subWidget == 'botao': # Neste caso "botao" adiciona os
                                     # botoes no espaco reservado do layout
             self.frmBtt = Frame(self.framePai4)
             self.subCellWid = Label(
-                self.frmBtt, text=self.message, fg='green', width=34, height=4)
+                    self.frmBtt, text=self.message, fg='green', width=34, height=4)
             self.subCellWid.pack(expand='yes', fill='both', pady=2, ipadx=2, ipady=2)
             self.subButonWid0 = Button(
-                self.frmBtt, text='Limpar Campos',bg='orange')
+                    self.frmBtt, text='Limpar Campos',bg='orange')
             self.subButonWid0.pack(side='left', pady=2, ipadx=2, ipady=2)
             self.subButonWid1 = Button(
-                self.frmBtt, text='Cadastrar Valores',bg='green')
+                    self.frmBtt, text='Cadastrar Valores',bg='green')
             self.subButonWid1.pack(side='right', pady=2, ipadx=2, ipady=2)
             self.widgetPack['btts'] = {
-                'btt1': self.subButonWid1, 'btt0' : self.subButonWid0}
-            self.widgetPack.update( # Empacotando os widgets criados pela classe Layout()
-                Layout.dispense(self, self.framePai4, self.celNomesL4, 
-                                tWid=self.tipoWidget, subwidget=self.frmBtt))
-        else: #por final se nenhuma destes foi solicitado, o espaco reservado permanece vazio
-            self.widgetPack.update( # Empacotando os widgets criados pela classe Layout()
-                Layout.dispense(self, self.framePai4, self.celNomesL4, 
-                                tWid=self.tipoWidget))
+                    'btt1': self.subButonWid1, 'btt0' : self.subButonWid0}
+             # Empacotando os widgets criados pela classe Layout
+            lay1 = Layout.creatLay(self.framePai4, self.celNomesL4, 
+                          tWid=self.tipoWidget, subwidget=self.frmBtt)
+            self.widgetPack.update(lay1)
+        else: #por fim se nenhuma destes foi solicitado, o espaco reservado permanece vazio
+             # Empacotando os widgets criados pela classe Layout
+            lay2 = Layout.creatLay(self.framePai4, self.celNomesL4, 
+                          tWid=self.tipoWidget)
+            self.widgetPack.update(lay2)
         # por fim o configurador retorna os devidos widgets empacotados em self.widgetPack.
         return self.widgetPack
-
-### ESTA CLASSE E RESPONSAVEL POR DISTRIBUIR O LAYOUT DINAMICAMENTE ###
-class Layout:
-    @staticmethod
-    def dispense( pai, celulas, tWid, desc=None, subwidget=None) -> dict:
-        ''' |>dispense -> retorna os widgets distribuidos e empacotados
-            |>pai ->Frame pai a receber os widgets distribuidos
-            |>celulas ->cards, definidos pelas chaves do dict passado
-            |>tWid -> tipo do widget a ser criado [tipo:Entry ou Label]
-            |>desc -> (opcional) cria uma tarja de descricao acima do card
-            |>subwidget -> (opcional) cria widgets no espaco reservado'''
-        dictEntryWidget = dict()
-        if desc:
-            #cria uma tarja de descricao acima do card quando solicitado
-            labelCobranca = Label(pai, text=desc.upper(), anchor='center')
-            labelCobranca.pack()
-        # percorre as celulas presentes no pacote
-        for desc, celula in celulas.items():
-            # container de disposicao da grade frm0
-            frm0 = Frame(pai, relief='groove', bd=2)
-            label = Label(frm0, text=desc.upper())
-            label.pack() # esta Label descreve o card
-            # percorre os widgets presentes no pacote
-            for widget in celula:
-                # removendo caracteres desnecessarios
-                nome = str(widget).replace('\t', '')
-                frm1 = Frame(frm0) # criando container da grade
-                textoStatico = Label( # configuracoes do Label
-                    frm1, text=widget.upper(),width=20, relief='flat')
-                textoStatico.grid( # posicao de alocamento do widget na grade
-                    row=1, column=0, padx=2, pady=2, ipadx=2, ipady=2)
-                # filtro de tipo de widget para Entry
-                if tWid == 'entry':
-                    widget = Entry( # configuracoes do Entry
-                        frm1, width=16, relief='groove', name=nome)
-                    widget.grid( # posicao de alocamento do widget na grade
-                        row=1, column=1, padx=2, pady=2, ipadx=2, ipady=2)
-                    dictEntryWidget[f'{nome}'] = widget
-                else: # filtro de tipo de widget para Label
-                    widget = Label( # configuracoes do Label
-                        frm1, text='100000',width=16, 
-                        relief='groove', name=nome)
-                    widget.grid( # posicao de alocamento na grade
-                        row=1, column=1, padx=2, pady=2, ipadx=2, ipady=2)
-                    dictEntryWidget[f'{nome}'] = widget
-                frm1.pack(anchor='w') # alocando do container da grade
-            if subwidget: # aqui sera alocado um subwidget caso for solicitado.
-                subwidget.pack( # alocando o subwidget na grade
-                    side='right', expand='yes', fill='both', 
-                    padx=2, pady=2, ipadx=2, ipady=2)
-            frm0.pack( # al;ocando o container de disposicao da grade frm0
-                side='left', padx=2, pady=2, ipadx=2, ipady=2,anchor='n')
-        # retorna os widgets configurados e enpacotados para uso
-        return dictEntryWidget
 
 
 class Manipulador(Janela, subGrade, Layout):
@@ -206,6 +150,7 @@ class Manipulador(Janela, subGrade, Layout):
                     # se o widget for um botao, a condicao passa
                     self.valEntry[keyWidget].delete(0, END)
                 else: continue
+            else: return 0
         else: # condicao para o comando de gravar dados
             for keyWidget in self.valEntry.keys():
                 if keyWidget != 'btts': # filtra os widgets
