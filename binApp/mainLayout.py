@@ -1,11 +1,12 @@
 from tkinter import Label, Entry, Frame, Widget
 
 
-### ESTA CLASSE E RESPONSAVEL POR DISTRIBUIR O LAYOUT DINAMICAMENTE ###
+# ESTA CLASSE E RESPONSAVEL POR DISTRIBUIR O LAYOUT DINAMICAMENTE
 class Layout:
     dictEntryWidget = dict()
+
     # define o tipo de widget para os dados como do tipo entrada
-    def retEntry( nome:str, pai:Widget ):
+    def retEntry(nome:str, pai:Widget ):
         widget = Entry( # configuracoes do Entry
                 pai, width=16, relief='groove', name=nome)
         widget.grid( # posicao de alocamento do widget na grade
@@ -42,13 +43,14 @@ class Layout:
     
     def creatLay(
         pai:Widget, 
-        celulas:dict, 
+        celulas:list,
         tWid:str, 
         desc:str=None, 
         subwidget:Widget=None, 
-        data:dict=None
-    ) -> dict:
-
+        data:dict=None) -> dict:
+        """
+        @rtype: object
+        """
         dataFrames = data
             
         # percorre as celulas presentes no pacote

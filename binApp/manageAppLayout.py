@@ -3,7 +3,7 @@ from tkinter import END
 
 from .dataHandler import HandlerDB
 from .teste import dictDados
-from .mainApp import Janela, subGrade, Layout, viewCard
+from .mainApp import Janela, SubGrade, Layout, ViewCard
 from .loging import Logger as log
 
 
@@ -16,9 +16,9 @@ class LastTable(HandlerDB):
         self.values = dictDados
         try:
             if self.verifyTable(_verify_all=True):
-                self.tableRequest:list = self.queryRequestTables(_last=True)
-                self.keysRequest:list = self.queryRequestColumns(self.tableRequest[-1][0])
-                self.dataRequest:list = self.queryRequestTables(_table=self.tableRequest[-1][0])
+                self.tableRequest: list = self.queryRequestTables(_last=True)
+                self.keysRequest: list = self.queryRequestColumns(self.tableRequest[-1][0])
+                self.dataRequest: list = self.queryRequestTables(_table=self.tableRequest[-1][0])
                 self.values = dict(zip(self.keysRequest, self.dataRequest[0]))
             
         except IndexError as _erro:
@@ -30,18 +30,18 @@ class LastTable(HandlerDB):
         
 
 
-class Manipulador(Janela, subGrade, Layout, LastTable):
+class Manipulador(Janela, SubGrade, Layout, LastTable):
     def __init__(self) -> None:
         super().__init__()
         # criando a janela de cobrancas
         self.dataQuery = LastTable()
         self.last_data = self.dataQuery._dictValues()
         
-        self.janelaCob = subGrade(self.widgets['Cobrancas'], 'label', dados=self.last_data)
-        self.valText = self.janelaCob.typeWidget('text', dados=self.last_data)
+        self.janelaCob = SubGrade(self.widgets['Cobrancas'], 'label', dados=self.last_data)
+        self.valText = self.janelaCob.type_widget('text', dados=self.last_data)
         # criando a janela de cadastros
-        self.janelaCad = subGrade(self.widgets['Cadastros'], 'entry')
-        self.valEntry = self.janelaCad.typeWidget('botao')
+        self.janelaCad = SubGrade(self.widgets['Cadastros'], 'entry')
+        self.valEntry = self.janelaCad.type_widget('botao')
         # adicionando os comandos aos botoes
         self.valEntry['btts']['btt1'].configure(
             command=lambda: self.comander('add'))

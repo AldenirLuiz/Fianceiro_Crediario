@@ -8,6 +8,7 @@ except ModuleNotFoundError:
     from manageDir import Diretorio
 
 
+
 class HandlerDB:
     __ROOT_DIR__:str = Diretorio()
     __DATABASE__:str = 'dadosCobranca.db'
@@ -75,7 +76,7 @@ class HandlerDB:
 
 
     def verifyTable(self, _table:str=None, _verify_all=False) -> bool:
-        
+                
         if _verify_all:
             if self.cursor.execute(self._query_table_exists.format(_table)).fetchall() != None:
                 return True
@@ -95,7 +96,7 @@ if __name__ == "__main__":
     hand = HandlerDB()
     #print(hand.verifyTable('Campina'))
     #print(Diretorio.retWayFile('dataBase', 'dadosCobranca.db'))
-    print(hand.queryAdd("campina19_02_2023", dictDados))
+    print(hand.queryAdd(dictDados))
     #temp = hand.queryRequestTables(_table='Campina21_07_2022', _last=False)
     #print(temp)
     #table = hand.queryRequestTables(_last=True)
