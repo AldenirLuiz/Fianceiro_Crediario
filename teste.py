@@ -8,14 +8,14 @@ cursor = conn.cursor()
 
 
 dictDados = {
-    'nome da rota:': 'Campina', 'data da rota:': '21072022', 'dataretorno': '21032022',
-    'valcobrado': '10000', 'repcobrado': '1000', 'totcobrado': '11000',
-    'repnovo': '1000', 'reptotal': '2000', 'fxnova': '40',
-    'fxbranco': '1', 'fxrepasse': '2', 'fxtotal': '43',
-    'vndanterior': '30000', 'devrua': '10000', 'totvendido': '20000',
-    'cmpdeposito': '30000', 'entdeposito': '10000', 'vndnova': '30000',
-    'brindes': '1000', 'flfxbranco': '1000', 'totrua': '31000',
-    'desprota': '1000', 'dspextra': '1000'}
+    'nome da rota:': 'Campina', 'data da rota:': '21072022', 'data para retorno:': '21032022',
+    'saldo cobrado:': '10000', 'repasse cobrado:': '1000', 'total cobrado:': '11000',
+    'repasse novo:': '1000', 'repasse total:': '2000', 'fichas novas:': '40',
+    'fichas em branco:': '1', 'fichas repasse:': '2', 'total fichas:': '43',
+    'venda anterior:': '30000', 'devolucao de rua:': '10000', 'total vendido:': '20000',
+    'compra deposito:': '30000', 'entrega deposito:': '10000', 'venda nova:': '30000',
+    'brindes:': '1000', 'vl fichas branco:': '1000', 'total na rua': '31000',
+    'despesa rota:': '1000', 'despesa extra:': '1000'}
 
 def gerBanco(**kwargs):
     

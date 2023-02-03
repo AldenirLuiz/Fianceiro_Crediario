@@ -1,8 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-from tkinter.messagebox import showinfo, WARNING, showwarning
-from binApp.manageBd import Gerente as Gb
-from teste import dictDados
 from binApp.mainLayout import Layout
 
 class Janela:
@@ -32,51 +29,73 @@ class Janela:
         
 ####### ESTA CLASSE E RESPONSAVEL POR CRIAR UMA GRADE DINAMICA DE |FRAMES|WIDGETS| ####### 
 class subGrade:
-    def __init__(self, notebook, tWidget) -> None:
+
+    def __init__(self, notebook, tWidget, dados=None) -> None:
         self.message = 'VERIFIQUE OS DADOS ANTES \nDE SALVAR.'
         self.tipoWidget = tWidget
         self.widgetPack = dict()
+        self.vtext = dados
         # A substituicao dos dados nestes dicionarios implica diretamente no aspecto geral do programa. 
         self.celNomesL0 = { # estes dicionarios predefinidos formam as celulas ou 'CARDS' dos widgets,
-            'data da rota':['nome da rota\t\t:', 'data da rota\t\t:'], 
-            'retorno':['data para retorno\t:']}
+            'data da rota':['nome da rota:', 'data da rota:'], 
+            'retorno':['data para retorno:']
+        }
+
         self.celNomesL1 = { # a posicao dos widgets depende da ordem dos itens
             'cobranca':[
-                'saldo cobrado\t:', 'repasse cobrado\t:', 'total cobrado\t:'], 
+                'saldo cobrado:', 'repasse cobrado:', 'total cobrado:'],
+
             'capital de giro':[
-                'venda anterior\t:', 'devolucao de rua\t:', 'total vendido\t\t:']}
+                'venda anterior:', 'devolucao de rua:', 'total vendido:']
+        }
+
         self.celNomesL2 = { # a distribuicao dos cards se faz por meio das chaves
             'saldo devedor':[
-                'repasse novo\t\t:', 'repasse total\t\t:'], 
+                'repasse novo:', 'repasse total:'],
+
             'deposito':[
-                'compra deposito\t:', 'entrega deposito\t:']}
+                'compra deposito:', 'entrega deposito:']
+        }
+
         self.celNomesL3 = { # cada lista como [valor] contem os nomes dos widgets a serem criados.
             'fichas':[
-                'fichas novas\t\t:', 'fichas  repasse\t\t:', 'fichas em branco\t:', 'total fichas\t\t:'], 
+                'fichas novas:', 'fichas repasse:', 'fichas em branco:', 'total fichas:'], 
             'mercadoria na rua':[
-                'venda nova\t\t:', 'brindes\t\t\t:', 'vl fichas branco\t:', 'total na rua\t\t:']}
+                'venda nova:', 'brindes:', 'vl fichas branco:', 'total na rua:']
+        }
+        
         self.celNomesL4 = {
-            'despesas':['despesa rota\t\t:', 'despesa extra\t\t:']}
+            'despesas':['despesa rota:', 'despesa extra:']
+        }
+
+
     ####################### |CARDS DO LAYOUT| #######################
         # Frame data da rota e retorno
         self.framePai0 = Frame(notebook)
-        self.widgetPack.update(Layout.creatLay( pai=self.framePai0, 
-                          celulas=self.celNomesL0, 
-                          tWid=self.tipoWidget, desc='dados da cobranca'))
+        self.widgetPack.update(
+            Layout.creatLay(
+                pai=self.framePai0, 
+                celulas=self.celNomesL0, 
+                tWid=self.tipoWidget, 
+                desc='dados da cobranca',
+                data=dados
+            )
+        )
+
         self.framePai0.grid(row=0, column=0)
         # Frame dos cards cobranca e capitial se giro
         self.framePai0 = Frame(notebook)
-        lay1 = Layout.creatLay(self.framePai0, self.celNomesL1, self.tipoWidget)
+        lay1 = Layout.creatLay(self.framePai0, self.celNomesL1, self.tipoWidget, data=dados)
         self.widgetPack.update(lay1)
         self.framePai0.grid(row=1, column=0)
         # Frame dos cards dados da rota e capitial se giro
         self.framePai2 = Frame(notebook)
-        lay2 = Layout.creatLay(self.framePai2, self.celNomesL2, self.tipoWidget)
+        lay2 = Layout.creatLay(self.framePai2, self.celNomesL2, self.tipoWidget, data=dados)
         self.widgetPack.update(lay2)
         self.framePai2.grid(row=2, column=0)
         # Frame dos cards saldo devedor e deposito
         self.framePai3 = Frame(notebook)
-        lay3 = Layout.creatLay(self.framePai3, self.celNomesL3, self.tipoWidget)
+        lay3 = Layout.creatLay(self.framePai3, self.celNomesL3, self.tipoWidget, data=dados)
         self.widgetPack.update(lay3)
         self.framePai3.grid(row=3, column=0)
         # Frame dos cards fichas e mercadoria na rua
@@ -122,50 +141,3 @@ class subGrade:
         # por fim o configurador retorna os devidos widgets empacotados em self.widgetPack.
         return self.widgetPack
 
-
-class Manipulador(Janela, subGrade, Layout):
-    def __init__(self) -> None:
-        super().__init__()
-        # definindo o nome do banco de dados
-        self.gerente = Gb( banco='dadosCobranca.db' )
-        # criando a janela de cobrancas
-        self.janelaCob = subGrade(self.widgets['Cobrancas'], 'label')
-        self.valText = self.janelaCob.typeWidget('text')
-        # criando a janela de cadastros
-        self.janelaCad = subGrade(self.widgets['Cadastros'], 'entry')
-        self.valEntry = self.janelaCad.typeWidget('botao')
-        # adicionando os comandos aos botoes
-        self.valEntry['btts']['btt1'].configure(
-            command=lambda: self.comander('add'))
-        self.valEntry['btts']['btt0'].configure(
-            command=lambda: self.comander('delete'))
-    # funcao de comando dos botoes
-    def comander(self, command) -> None:
-        # dicionario para empacotar os valores das entrys
-        dictValues = dict()
-        # condicao para o comando do botao de limpar
-        if command == 'delete':
-            for keyWidget in self.valEntry.keys():
-                if keyWidget != 'btts': # filtra os widgets 
-                    # se o widget for um botao, a condicao passa
-                    self.valEntry[keyWidget].delete(0, END)
-                else: continue
-            else: return 0
-        else: # condicao para o comando de gravar dados
-            for keyWidget in self.valEntry.keys():
-                if keyWidget != 'btts': # filtra os widgets
-                    # se o widget for um botao, a condicao passa
-                    widgetText = self.valEntry[keyWidget].get()
-                    dictValues[keyWidget] = widgetText
-                else: continue
-        # cria uma requisicao no gerente do banco de dados para adicionar os dados
-        queryState = self.gerente.gerenteBd(dados=dictDados, query='add')
-        if queryState != 'dados inseridos':
-            warningWindow = showwarning(
-                title="ATENÇÃO!", message=f'{queryState}', icon=WARNING)
-            pass
-        else:
-            warningWindow = showinfo(title="TUDO OK", message=f'{queryState}')
-        #PARA USAR OS DADOS DE ENTRADA DA GUI SUBSTITUIR (dictDados) POR (dictValues)
-        #PARA USAR OS DADOS DE ENTRADA DE TESTE SUBSTITUIR (dictValues) POR (dictDados)
-        

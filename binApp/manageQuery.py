@@ -1,8 +1,9 @@
-
-import os
 import sqlite3
 from sqlite3 import Error
-from binApp import manageDir as mdir
+try:
+    from binApp import manageDir as mdir
+except ModuleNotFoundError:
+    import manageDir as mdir
 
 ''' Aldenir luiz| 22/07/2022
     Prezado Contribuidor, por favor nao remover funcoes nao utilizadas!
@@ -13,9 +14,9 @@ from binApp import manageDir as mdir
 class BancoDados:
     def __init__( self, banco ) -> None:
         ### obtendo o caminho de execucao do script ###
-        self.execDir = str( mdir.Diretorio.retDirApp( ) )
+        self.execDir = str( mdir.Diretorio )
         ### obtendo o caminho do log do diretorio ###
-        self.logDir = str( mdir.Logger.retListApp( ) )
+        #self.logDir = str( mdir.Logger.retListApp(self) )
         ### obtendo o nome do banco de dados solicitado ###
         self.nomeBanco = banco
         ### criando conexao com o banco###
@@ -64,9 +65,9 @@ class BancoDados:
                 retData = self.cursor.execute( f"SELECT * FROM '{ nomeTabela }'" )
                 return retData.fetchall()
         except Error as erro: # em caso de erro, a funcao nao continua.
-            print(erro)
+            print(f"O seguinte Erro ocorreu ao consultar os dados: {erro}")
             # retorna uma string alertando que aconsulta nao pode ser feita, a descricao do erro vai anexada.
-            return f'Erro! Os Dados Nao Foram Inseridos\n{ erro }'
+            return f'Erro! \n{ erro }'
 
 
     # A FUNCAO DE CONSULTA DE SER USADA APENAS PELA CLASS DO BANCO! #NAO IMPLEMENTADA NA GUI!#
@@ -88,19 +89,13 @@ class BancoDados:
             return False
     
 
-######## MANTER ESTAS LINHAs COMO TEST DRIVER DO BANCO ########
-#dataTest = {'Nome': 'Aldenir', 'Idade': 22, 'Sexo': 'Masculino'}
-#teste = BancoDados( 'teste' )
-#teste.inserirDados('Teste', **dataTest)
-#teste.apagarBanco("Vendedores")
-#teste.apagarDados("Vendedores", "Nome='Aldenir'")
-#retorno = teste.pegarDados('Teste', dado="Nome='Aldenir'")
-#print( dict(retorno[0]) )
-#print( teste.consultaDados( 'Teste', dados="Nome='Aldenir'" ) )
-"""for dado in teste.pegarDados('Vendedores'):
-    try:
-        for key, value in dict(dado).items():
-            print(f'|\t{key}\t: {value}')
-    except ValueError as erro:
-        print(dado)
-        print(erro)"""
+if __name__ == '__main__':
+    ######## MANTER ESTAS LINHAs COMO TEST DRIVER DO BANCO ########
+    dataTest = {'Nome': 'Aldenir', 'Idade': 22, 'Sexo': 'Masculino'}
+    teste = BancoDados( 'teste.db' )
+    #teste.inserirDados('Teste', **dataTest)
+    
+    #teste.apagarDados("Vendedores", "Nome='Aldenir'")
+    retorno = teste.pegarDados('Teste', dado="Nome='Aldenir'")
+    print(f"Resultado da Consulta: {dict(retorno[0])}")
+    #print( teste.consultaDados( 'Teste', dados="Nome='Aldenir'" ) )

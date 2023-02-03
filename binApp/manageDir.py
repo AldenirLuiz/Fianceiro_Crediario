@@ -3,11 +3,7 @@ import os
 
 class Diretorio:
     """|retDirApp>retorna o caminho absoluto da pasta de execucao do script<|retDirApp|"""
-    def retDirApp( ) -> str :
-        dados = os.path.dirname( f"{__file__}" )
-        return dados
-    
-    def retWayApp( file=None, path=None ) -> str:
+    def retWayApp(file=None, path=None ) -> str:
         mainPath = "./"
         for diretorio, subpastas, arquivos in os.walk(mainPath):
             for arquivo in arquivos:
@@ -17,6 +13,10 @@ class Diretorio:
                 else: continue
             else: return f"{os.path.join(os.path.realpath(diretorio))}\\{path}\\{file}"
         else: return False
+
+
+    def __str__(self) -> str:
+        return os.path.dirname( f"{__file__}" )
             
     
 class Logger:
@@ -24,12 +24,21 @@ class Logger:
     global dirName
     dirName = "dirLog.log"
     
-    def retListApp( ) -> str :
-        logWay = Diretorio.retWayApp(file=dirName, path='logDir')
+    def retListApp(self) -> str :
         os.system( f"python --version >{Diretorio.retWayApp(file=dirName, path='logDir')} & dir >>{Diretorio.retWayApp(file=dirName,path='logDir')}" )
+        logWay = Diretorio.retWayApp(file=dirName, path='logDir')
         return logWay
     
-    def retTextApp( ):
+    def retTextApp(self) -> str:
         logWay = Diretorio.retWayApp(file=dirName, path='logDir')
         retText = os.system( f"type {Diretorio.retWayApp(file=dirName, path='logDir')}" )
         return retText
+
+
+    def __str__(self) -> str:
+        return self.retListApp()
+
+
+if __name__ == "__main__":
+    log = Logger()
+    print(f"Resultado: {log}")

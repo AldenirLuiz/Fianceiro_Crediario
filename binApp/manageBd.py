@@ -10,7 +10,7 @@ class Gerente():
         ### definindo o log de pasta ###
         self._logger = manageDir.Logger
         ### obtendo o caminho do log do diretorio ###
-        self.logDir = f"{self._logger.retListApp( )}"
+        self.logDir = f"{self._logger.retListApp(self)}"
         ### obtendo o nome do Banco ###
         self.nomeBanco = f"{kwargs.get( 'banco' )}"
         ### verificando banco de dados ###
@@ -24,7 +24,7 @@ class Gerente():
         dados = kwargs.get('dados')
         query = kwargs.get('query') # Tipo de requisicao.
         # A tabela sera nomeada com base em ( nome e data ) vindo dos dados.
-        tabela = f"{dados['nome da rota:']}{dados['data da rota:']}"
+        tabela = f"{dados['nome da rota:']}"
         if query == 'add': # se o tipo da query for adicionar.
             if self.verTabela( tabela ): # Verificando se a tabela ja existe.
                 return f'A Tabela { tabela } ja existe no banco de dados: { self.nomeBanco }'
