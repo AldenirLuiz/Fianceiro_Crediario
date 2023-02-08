@@ -1,7 +1,5 @@
 from tkinter.messagebox import showinfo, WARNING, showwarning
 from tkinter import END
-#from binApp.deprecated.manageBd import Gerente as Gb
-#from binApp.deprecated.manageQuery import BancoDados as bd
 from binApp.dataHandler import HandlerDB
 from binApp.teste import dictDados
 from .mainApp import Janela, subGrade, Layout
