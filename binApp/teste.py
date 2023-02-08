@@ -8,7 +8,7 @@ cursor = conn.cursor()
 
 
 dictDados = {
-    'nome da rota:': 'Campina', 'data da rota:': '21072022', 'data para retorno:': '21032022',
+    'nome da rota:': 'Campina', 'data da rota:': '21_07_2022', 'data para retorno:': '21_03_2022',
     'saldo cobrado:': '10000', 'repasse cobrado:': '1000', 'total cobrado:': '11000',
     'repasse novo:': '1000', 'repasse total:': '2000', 'fichas novas:': '40',
     'fichas em branco:': '1', 'fichas repasse:': '2', 'total fichas:': '43',
@@ -29,7 +29,7 @@ def gerBanco(**kwargs):
         cursor.execute(f"INSERT INTO {nTable} VALUES{tuple(kwargs.values())}")
         conn.commit()
     
-
-gerBanco(**dictDados)
-#xtractKeys(dictDados)
+if __name__ == '__main__':
+    gerBanco(**dictDados)
+    #xtractKeys(dictDados)
 

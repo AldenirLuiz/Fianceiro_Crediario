@@ -1,44 +1,62 @@
 import os
+import sys
+import logging
 
+app_root_dir = os.path.dirname(os.path.dirname(f"{__file__}"))
 
 class Diretorio:
-    """|retDirApp>retorna o caminho absoluto da pasta de execucao do script<|retDirApp|"""
-    def retWayApp(file=None, path=None ) -> str:
-        mainPath = "./"
-        for diretorio, subpastas, arquivos in os.walk(mainPath):
-            for arquivo in arquivos:
-                temp = f"{os.path.join(os.path.realpath(diretorio), arquivo)}"
-                if str(file) in temp:
-                    return temp
-                else: continue
-            else: return f"{os.path.join(os.path.realpath(diretorio))}\\{path}\\{file}"
-        else: return False
+    
+    def retWayPath(self, _path):
+        if not os.path.exists(f'{app_root_dir}/{_path}'):
+            self.createDir(app_root_dir, _path)
 
+        return os.path.join(f"{app_root_dir}\\{_path}")
+        
+    
+    def createDir(self, _s_dir, _c_dir):
+        try:
+            os.makedirs(_c_dir)
+        except OSError as _erro:
+            print(
+                f'''
+                    Um erro ocoreu ao tentar criar o diretorio: {_c_dir} 
+                    No destino: {_s_dir}
+                    ERRO: {_erro}
+                '''
+            )
 
-    def __str__(self) -> str:
-        return os.path.dirname( f"{__file__}" )
             
-    
-class Logger:
-    '''|retListApp>cria um log com os dados detalhados do diretorio atual e o retorna<|retListApp|'''
-    global dirName
-    dirName = "dirLog.log"
-    
-    def retListApp(self) -> str :
-        os.system( f"python --version >{Diretorio.retWayApp(file=dirName, path='logDir')} & dir >>{Diretorio.retWayApp(file=dirName,path='logDir')}" )
-        logWay = Diretorio.retWayApp(file=dirName, path='logDir')
-        return logWay
-    
-    def retTextApp(self) -> str:
-        logWay = Diretorio.retWayApp(file=dirName, path='logDir')
-        retText = os.system( f"type {Diretorio.retWayApp(file=dirName, path='logDir')}" )
-        return retText
-
-
     def __str__(self) -> str:
-        return self.retListApp()
+        return app_root_dir
+    
+    class ErrDir(Exception):
+        pass
+
+
+
+
+class Logger:
+    def __init__(self, dir_name="dirLog.log"):
+        self.dir_name = dir_name
+
+        log_path = Diretorio().retWayApp(file=self.dir_name, _path="logDir")
+        logging.basicConfig(filename=log_path, level=logging.INFO)
+
+    def retListApp(self):
+        logging.info("Python version: {}".format(sys.version))
+        logging.info("Current directory contents: {}".format(os.listdir(".")))
+        
+    def retTextApp(self):
+        temp_text = ''
+        with open(logging.getLogger().handlers[0].baseFilename, "r") as text_read:
+            for line in text_read:
+                temp_text += line
+            return temp_text
+    
+    def __str__(self):
+        return self.retTextApp()
 
 
 if __name__ == "__main__":
-    log = Logger()
-    print(f"Resultado: {log}")
+    log = Diretorio()
+    print(f"Resultado: {log.retWayFile(file='dadosCobranca.db')}")
