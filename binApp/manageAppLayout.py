@@ -17,7 +17,7 @@ class Manipulador(Janela, subGrade, Layout):
         self.dictValues = dict(zip(self.keysRequest, self.dataRequest[0]))
 
         self.janelaCob = subGrade(self.widgets['Cobrancas'], 'label', dados=self.dictValues)
-        self.valText = self.janelaCob.typeWidget('text')
+        self.valText = self.janelaCob.typeWidget('text', dados=self.dictValues)
         # criando a janela de cadastros
         self.janelaCad = subGrade(self.widgets['Cadastros'], 'entry')
         self.valEntry = self.janelaCad.typeWidget('botao')
@@ -46,9 +46,10 @@ class Manipulador(Janela, subGrade, Layout):
                     # se o widget for um botao, a condicao passa
                     widgetText = self.valEntry[keyWidget].get()
                     dictValues[keyWidget] = widgetText
+                    
                 else: continue
         # cria uma requisicao no gerente do banco de dados para adicionar os dados
-        queryState = self.data.queryAdd(self, dictDados['nome da rota:'], dictDados)
+        queryState = self.data.queryAdd(_data=dictDados)
         #PARA USAR OS DADOS DE ENTRADA DA GUI SUBSTITUIR (dictDados) POR (dictValues)
         #PARA USAR OS DADOS DE ENTRADA DE TESTE SUBSTITUIR (dictValues) POR (dictDados)
 

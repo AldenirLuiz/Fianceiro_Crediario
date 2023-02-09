@@ -1,0 +1,52 @@
+
+
+{    
+    "celNomesL0" : { 
+        "data da rota":[
+            "nome da rota:", 
+            "data da rota:"], 
+        "retorno":[
+            "data para retorno:"
+            ]
+    },
+
+    "celNomesL1" : {
+        "cobranca":[
+            "saldo cobrado:", 
+            "repasse cobrado:", 
+            "total cobrado:"],
+
+        "capital de giro":[
+            "venda anterior:", 
+            "devolucao de rua:", 
+            "total vendido:"]
+    },
+
+    "celNomesL2" : {
+        "saldo devedor":[
+            "repasse novo:", 
+            "repasse total:"],
+        "deposito":[
+            "compra deposito:", 
+            "entrega deposito:"]
+    },
+
+    "celNomesL3" : {
+        "fichas":[
+            "fichas novas:", 
+            "fichas repasse:", 
+            "fichas em branco:", 
+            "total fichas:"], 
+        "mercadoria na rua":[
+            "venda nova:", 
+            "brindes:", 
+            "vl fichas branco:", 
+            "total na rua:"]
+    },
+    "celNomesL4" : {
+        "despesas":[
+            "despesa rota:", 
+            "despesa extra:"
+        ]
+    }
+}

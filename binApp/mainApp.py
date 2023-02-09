@@ -1,6 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 from binApp.mainLayout import Layout
+import json
+from binApp.manageDir import Diretorio as _DIR_
+
+
 
 class Janela:
     def __init__(self) -> None:
@@ -35,39 +39,7 @@ class subGrade:
         self.tipoWidget = tWidget
         self.widgetPack = dict()
         self.vtext = dados
-        # A substituicao dos dados nestes dicionarios implica diretamente no aspecto geral do programa. 
-        self.celNomesL0 = { # estes dicionarios predefinidos formam as celulas ou 'CARDS' dos widgets,
-            'data da rota':['nome da rota:', 'data da rota:'], 
-            'retorno':['data para retorno:']
-        }
-
-        self.celNomesL1 = { # a posicao dos widgets depende da ordem dos itens
-            'cobranca':[
-                'saldo cobrado:', 'repasse cobrado:', 'total cobrado:'],
-
-            'capital de giro':[
-                'venda anterior:', 'devolucao de rua:', 'total vendido:']
-        }
-
-        self.celNomesL2 = { # a distribuicao dos cards se faz por meio das chaves
-            'saldo devedor':[
-                'repasse novo:', 'repasse total:'],
-
-            'deposito':[
-                'compra deposito:', 'entrega deposito:']
-        }
-
-        self.celNomesL3 = { # cada lista como [valor] contem os nomes dos widgets a serem criados.
-            'fichas':[
-                'fichas novas:', 'fichas repasse:', 'fichas em branco:', 'total fichas:'], 
-            'mercadoria na rua':[
-                'venda nova:', 'brindes:', 'vl fichas branco:', 'total na rua:']
-        }
-        
-        self.celNomesL4 = {
-            'despesas':['despesa rota:', 'despesa extra:']
-        }
-
+        self.propert_layers = viewCard()
 
     ####################### |CARDS DO LAYOUT| #######################
         # Frame data da rota e retorno
@@ -75,7 +47,7 @@ class subGrade:
         self.widgetPack.update(
             Layout.creatLay(
                 pai=self.framePai0, 
-                celulas=self.celNomesL0, 
+                celulas=self.propert_layers.retCard('celNomesL0'), 
                 tWid=self.tipoWidget, 
                 desc='dados da cobranca',
                 data=dados
@@ -85,17 +57,17 @@ class subGrade:
         self.framePai0.grid(row=0, column=0)
         # Frame dos cards cobranca e capitial se giro
         self.framePai0 = Frame(notebook)
-        lay1 = Layout.creatLay(self.framePai0, self.celNomesL1, self.tipoWidget, data=dados)
+        lay1 = Layout.creatLay(self.framePai0, self.propert_layers.retCard("celNomesL1"), self.tipoWidget, data=dados)
         self.widgetPack.update(lay1)
         self.framePai0.grid(row=1, column=0)
         # Frame dos cards dados da rota e capitial se giro
         self.framePai2 = Frame(notebook)
-        lay2 = Layout.creatLay(self.framePai2, self.celNomesL2, self.tipoWidget, data=dados)
+        lay2 = Layout.creatLay(self.framePai2, self.propert_layers.retCard("celNomesL2"), self.tipoWidget, data=dados)
         self.widgetPack.update(lay2)
         self.framePai2.grid(row=2, column=0)
         # Frame dos cards saldo devedor e deposito
         self.framePai3 = Frame(notebook)
-        lay3 = Layout.creatLay(self.framePai3, self.celNomesL3, self.tipoWidget, data=dados)
+        lay3 = Layout.creatLay(self.framePai3, self.propert_layers.retCard("celNomesL3"), self.tipoWidget, data=dados)
         self.widgetPack.update(lay3)
         self.framePai3.grid(row=3, column=0)
         # Frame dos cards fichas e mercadoria na rua
@@ -104,7 +76,7 @@ class subGrade:
         self.framePai4.grid(row=4, column=0,) 
         
     ####### CONFIGURACOES DA GRADE DO LAYOUT (TIPOS DE WIDGET SECUNDARIOS) #######
-    def typeWidget(self, subWidget):
+    def typeWidget(self, subWidget, dados=None):
         # ESTA CONDICAO VERIFICA O TIPO DE WIDGET REQUERIDO
         if subWidget == 'text': # Neste caso "text" adiciona widget de caixa de texto \
                                     # no espaco reservado do layout
@@ -112,8 +84,8 @@ class subGrade:
             self.subCellWid.insert(0.0, 'OBSERVACOES:') # textbox para observacoes
             # o widget gerado nesta condicao e adicionado ao container de widgets
             lay0 = Layout.creatLay( # Empacotando os widgets criados pela classe Layout
-                    self.framePai4, self.celNomesL4, 
-                    self.tipoWidget, subwidget=self.subCellWid)
+                    self.framePai4, self.propert_layers.retCard("celNomesL4"), 
+                    self.tipoWidget, subwidget=self.subCellWid, data=dados)
             self.widgetPack.update(lay0)
         elif subWidget == 'botao': # Neste caso "botao" adiciona os
                                     # botoes no espaco reservado do layout
@@ -130,14 +102,29 @@ class subGrade:
             self.widgetPack['btts'] = {
                     'btt1': self.subButonWid1, 'btt0' : self.subButonWid0}
              # Empacotando os widgets criados pela classe Layout
-            lay1 = Layout.creatLay(self.framePai4, self.celNomesL4, 
+            lay1 = Layout.creatLay(self.framePai4, self.propert_layers.retCard("celNomesL4"), 
                           tWid=self.tipoWidget, subwidget=self.frmBtt)
             self.widgetPack.update(lay1)
         else: #por fim se nenhuma destes foi solicitado, o espaco reservado permanece vazio
              # Empacotando os widgets criados pela classe Layout
-            lay2 = Layout.creatLay(self.framePai4, self.celNomesL4, 
+            lay2 = Layout.creatLay(self.framePai4, self.propert_layers.retCard("celNomesL4"), 
                           tWid=self.tipoWidget)
             self.widgetPack.update(lay2)
         # por fim o configurador retorna os devidos widgets empacotados em self.widgetPack.
         return self.widgetPack
 
+
+
+class viewCard:
+
+    def __init__(self) -> None:
+        self.config_json = f"{_DIR_()}/cellNames.json"
+    
+    def retCard(self, card:str, celula:str=None) -> list:
+        with open(self.config_json, "r") as cell_names:
+            self.propert_layers = json.load(cell_names)
+
+        if celula:
+            return self.propert_layers[card][celula]
+        
+        return self.propert_layers[card]

@@ -13,17 +13,22 @@ class HandlerDB:
         try:
             self.banco = db.connect(self.__ROOT_DIR__.retWayPath(f'dataBase/{self.__DATABASE__}'))
         except Diretorio.ErrDir:
-            raise self.ErrConnectDB("Problema ao Conectar com o Banco de dados.\n->Possivel erro de permissao de leitura/gravacao, Contate o administrador do Sistema.")
-
+            raise self.ErrConnectDB(
+                """Problema ao Conectar com o Banco de dados.\n
+                ->Possivel erro de permissao de leitura/gravacao, 
+                Contate o administrador do Sistema."""
+            )
         self.cursor = self.banco.cursor()
 
-    def queryAdd(self, _table:str, _data:dict):
-        _table_ = f"{_table}{_data['data da rota:']}"
+    def queryAdd(self, _data:dict):
+        print(_data.keys())
+        _table_ = f"{_data['nome da rota:']}{_data['data da rota:']}"
         temp_table_create = f"CREATE TABLE {_table_} {tuple(_data.keys())};"
         temp_data_adict = f"INSERT INTO {_table_} VALUES{tuple(_data.values())};"
 
         if not self.verifyTable(_table_):
             self.cursor.execute(temp_table_create)
+            self.banco.commit()
             self.cursor.execute(temp_data_adict)
             self.banco.commit()
             return "All data are aded"
@@ -80,10 +85,10 @@ if __name__ == "__main__":
     hand = HandlerDB()
     #print(hand.verifyTable('Campina'))
     #print(Diretorio.retWayFile('dataBase', 'dadosCobranca.db'))
-    #print(hand.queryAdd("campina22_01_2023", dictDados))
+    print(hand.queryAdd("campina19_02_2023", dictDados))
     #temp = hand.queryRequestTables(_table='Campina21_07_2022', _last=False)
     #print(temp)
-    table = hand.queryRequestTables(_last=True)
-    print(hand.queryRequestTables(_table=table[0][0]))
+    #table = hand.queryRequestTables(_last=True)
+    #print(hand.queryRequestTables(_table=table[0][0]))
 
 

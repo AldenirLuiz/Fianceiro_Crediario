@@ -8,13 +8,13 @@ cursor = conn.cursor()
 
 
 dictDados = {
-    'nome da rota:': 'Campina', 'data da rota:': '21_07_2022', 'data para retorno:': '21_03_2022',
+    'nome da rota:': 'Campina', 'data da rota:': '2_03_2023', 'data para retorno:': '21_03_2022',
     'saldo cobrado:': '10000', 'repasse cobrado:': '1000', 'total cobrado:': '11000',
     'repasse novo:': '1000', 'repasse total:': '2000', 'fichas novas:': '40',
     'fichas em branco:': '1', 'fichas repasse:': '2', 'total fichas:': '43',
-    'venda anterior:': '30000', 'devolucao de rua:': '10000', 'total vendido:': '20000',
+    'venda anterior:': '3000', 'devolucao de rua:': '10000', 'total vendido:': '20000',
     'compra deposito:': '30000', 'entrega deposito:': '10000', 'venda nova:': '30000',
-    'brindes:': '1000', 'vl fichas branco:': '1000', 'total na rua': '31000',
+    'brindes:': '1000', 'vl fichas branco:': '1000', 'total na rua:': '31000',
     'despesa rota:': '1000', 'despesa extra:': '1000'}
 
 def gerBanco(**kwargs):
