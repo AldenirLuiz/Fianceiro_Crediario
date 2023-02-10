@@ -15,6 +15,7 @@ class Janela:
         self.frameLogin.pack(expand='yes', fill='both', anchor='center')
         self.noteBook = ttk.Notebook(self.frameLogin, padding=8)
         self.noteBook.pack(expand='yes', fill='both', anchor='center')
+        
         # widgets: este container guardara os frames do notebook para acesso posterior
         self.widgets = dict() # acesesso: self.widgets['nome do widget']
         # noteNomes: lista os nomes para nomear as abas do notebook.

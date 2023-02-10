@@ -1,23 +1,44 @@
 from tkinter.messagebox import showinfo, WARNING, showwarning
 from tkinter import END
-from binApp.dataHandler import HandlerDB
-from binApp.teste import dictDados
-from .mainApp import Janela, subGrade, Layout
+
+from .dataHandler import HandlerDB
+from .teste import dictDados
+from .mainApp import Janela, subGrade, Layout, viewCard
+from .loging import Logger as log
 
 
-class Manipulador(Janela, subGrade, Layout):
+
+class LastTable(HandlerDB):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.log = log()
+        self.values = dictDados
+        try:
+            if self.verifyTable(_verify_all=True):
+                self.tableRequest:list = self.queryRequestTables(_last=True)
+                self.keysRequest:list = self.queryRequestColumns(self.tableRequest[-1][0])
+                self.dataRequest:list = self.queryRequestTables(_table=self.tableRequest[-1][0])
+                self.values = dict(zip(self.keysRequest, self.dataRequest[0]))
+            
+        except IndexError as _erro:
+            log.retListApp(_erro)
+
+    def _dictValues(self) -> dict:
+        values = self.values
+        return values
+        
+
+
+class Manipulador(Janela, subGrade, Layout, LastTable):
     def __init__(self) -> None:
         super().__init__()
         # criando a janela de cobrancas
-
-        self.data = HandlerDB()
-        self.tableRequest:list = self.data.queryRequestTables(_last=True)
-        self.keysRequest:list = self.data.queryRequestColumns(self.tableRequest[-1][0])
-        self.dataRequest:list = self.data.queryRequestTables(_table=self.tableRequest[-1][0])
-        self.dictValues = dict(zip(self.keysRequest, self.dataRequest[0]))
-
-        self.janelaCob = subGrade(self.widgets['Cobrancas'], 'label', dados=self.dictValues)
-        self.valText = self.janelaCob.typeWidget('text', dados=self.dictValues)
+        self.dataQuery = LastTable()
+        self.last_data = self.dataQuery._dictValues()
+        
+        self.janelaCob = subGrade(self.widgets['Cobrancas'], 'label', dados=self.last_data)
+        self.valText = self.janelaCob.typeWidget('text', dados=self.last_data)
         # criando a janela de cadastros
         self.janelaCad = subGrade(self.widgets['Cadastros'], 'entry')
         self.valEntry = self.janelaCad.typeWidget('botao')
@@ -49,7 +70,7 @@ class Manipulador(Janela, subGrade, Layout):
                     
                 else: continue
         # cria uma requisicao no gerente do banco de dados para adicionar os dados
-        queryState = self.data.queryAdd(_data=dictDados)
+        queryState =  self.dataQuery.queryAdd(_data=dictValues)
         #PARA USAR OS DADOS DE ENTRADA DA GUI SUBSTITUIR (dictDados) POR (dictValues)
         #PARA USAR OS DADOS DE ENTRADA DE TESTE SUBSTITUIR (dictValues) POR (dictDados)
 
@@ -62,4 +83,6 @@ class Manipulador(Janela, subGrade, Layout):
 
 
         
-        
+if __name__ == "__main__":
+    temp = LastTable()
+    print(temp)

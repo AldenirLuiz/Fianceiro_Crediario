@@ -48,5 +48,14 @@
             "despesa rota:", 
             "despesa extra:"
         ]
+    },
+    "notebookNames":{
+        "noteNomes": [
+            "Cobrancas", 
+            "Rotas", 
+            "Cadastros", 
+            "Historico"
+        ]
     }
+
 }

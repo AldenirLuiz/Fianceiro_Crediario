@@ -1,6 +1,8 @@
 import sqlite3 as db
+from sqlite3 import OperationalError
 try:
     from binApp.manageDir import Diretorio
+    from binApp.loging import Logger as log
 except ModuleNotFoundError:
     from manageDir import Diretorio
 
@@ -11,22 +13,23 @@ class HandlerDB:
 
     def __init__(self) -> None:
         try:
-            self.banco = db.connect(self.__ROOT_DIR__.retWayPath(f'dataBase/{self.__DATABASE__}'))
-        except Diretorio.ErrDir:
-            raise self.ErrConnectDB(
-                """Problema ao Conectar com o Banco de dados.\n
+            self.banco = db.connect(f'{self.__ROOT_DIR__}/dataBase/{self.__DATABASE__}')
+            self.cursor = self.banco.cursor()
+        except OperationalError as _erro:
+            message = f"""Problema ao Conectar com o Banco de dados.\n
                 ->Possivel erro de permissao de leitura/gravacao, 
-                Contate o administrador do Sistema."""
-            )
-        self.cursor = self.banco.cursor()
+                Contate o administrador do Sistema.
+                ERRO:{_erro}"""
+            log.retListApp(message)
+            self.ErrConnectDB(message)
+
 
     def queryAdd(self, _data:dict):
-        print(_data.keys())
         _table_ = f"{_data['nome da rota:']}{_data['data da rota:']}"
         temp_table_create = f"CREATE TABLE {_table_} {tuple(_data.keys())};"
         temp_data_adict = f"INSERT INTO {_table_} VALUES{tuple(_data.values())};"
 
-        if not self.verifyTable(_table_):
+        if self.verifyTable(_table=_table_):
             self.cursor.execute(temp_table_create)
             self.banco.commit()
             self.cursor.execute(temp_data_adict)
@@ -68,9 +71,16 @@ class HandlerDB:
             return "Tabela Inexistente"
 
 
-    def verifyTable(self, _table:str) -> bool:
-        temp_check_table = f"SELECT name FROM sqlite_master WHERE type='table' AND name='{_table}';"
-        if self.cursor.execute(temp_check_table).fetchone():
+    def verifyTable(self, _table:str=None, _verify_all=False) -> bool:
+        if _verify_all:
+            temp = self.cursor.execute(
+                f"SELECT name FROM sqlite_master WHERE type='table';").fetchone()
+            if temp != None:
+                return True
+            else: return False
+        
+        temp_check_table = self.cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{_table}';").fetchone()
+        if temp_check_table != []:
             return True
         else:
             return False
