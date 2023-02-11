@@ -1,5 +1,6 @@
 import sqlite3 as db
-from sqlite3 import OperationalError
+from sqlite3 import OperationalError, Connection, Cursor
+from typing import Union
 try:
     from binApp.manageDir import Diretorio
     from binApp.loging import Logger as log
@@ -8,15 +9,16 @@ except ModuleNotFoundError:
 
 
 class HandlerDB:
-    __ROOT_DIR__ = Diretorio()
-    __DATABASE__ = 'dadosCobranca.db'
+    __ROOT_DIR__:str = Diretorio()
+    __DATABASE__:str = 'dadosCobranca.db'
 
     def __init__(self) -> None:
         try:
-            self.banco = db.connect(f'{self.__ROOT_DIR__}/dataBase/{self.__DATABASE__}')
-            self.cursor = self.banco.cursor()
+            self.banco:Connection = db.connect(
+                f'{self.__ROOT_DIR__}/dataBase/{self.__DATABASE__}')
+            self.cursor:Cursor = self.banco.cursor()
         except OperationalError as _erro:
-            message = f"""Problema ao Conectar com o Banco de dados.\n
+            message:str = f"""Problema ao Conectar com o Banco de dados.\n
                 ->Possivel erro de permissao de leitura/gravacao, 
                 Contate o administrador do Sistema.
                 ERRO:{_erro}"""
@@ -24,10 +26,10 @@ class HandlerDB:
             self.ErrConnectDB(message)
 
 
-    def queryAdd(self, _data:dict):
-        _table_ = f"{_data['nome da rota:']}{_data['data da rota:']}"
-        temp_table_create = f"CREATE TABLE {_table_} {tuple(_data.keys())};"
-        temp_data_adict = f"INSERT INTO {_table_} VALUES{tuple(_data.values())};"
+    def queryAdd(self, _data:dict[str, str]) -> str:
+        _table_:str = f"{_data['nome da rota:']}{_data['data da rota:']}"
+        temp_table_create:str = f"CREATE TABLE {_table_} {tuple(_data.keys())};"
+        temp_data_adict:str = f"INSERT INTO {_table_} VALUES{tuple(_data.values())};"
 
         if self.verifyTable(_table=_table_):
             self.cursor.execute(temp_table_create)
@@ -41,12 +43,12 @@ class HandlerDB:
 
     def queryRequestTables(self, _table:str=None, _last:bool=False) -> list:
         
-        temp_request_table = "SELECT name FROM sqlite_master WHERE type='table';"
-        temp_request_data = f"SELECT * FROM '{_table}'"
+        temp_request_table:str = "SELECT name FROM sqlite_master WHERE type='table';"
+        temp_request_data:str = f"SELECT * FROM '{_table}'"
 
         if _last:
             try:
-                temp = self.cursor.execute(temp_request_table).fetchall()
+                temp:list = self.cursor.execute(temp_request_table).fetchall()
                 return temp
             except db.Error as _erro:
                 raise _erro
@@ -55,17 +57,17 @@ class HandlerDB:
             return "Tabela Inexistente"
         else:
             try:
-                temp = self.cursor.execute(temp_request_data)
+                temp:list = self.cursor.execute(temp_request_data)
                 return temp.fetchall()
             except db.Error as _erro:
                 raise _erro
     
 
     def queryRequestColumns(self, _table:str) -> list:
-        temp_query_columns = f"PRAGMA table_info({_table})"
+        temp_query_columns:str = f"PRAGMA table_info({_table})"
         
         if self.verifyTable(_table):
-            temp_data = self.cursor.execute(temp_query_columns).fetchall()
+            temp_data:list = self.cursor.execute(temp_query_columns).fetchall()
             return [column[1] for column in temp_data]
         else:
             return "Tabela Inexistente"
@@ -73,8 +75,10 @@ class HandlerDB:
 
     def verifyTable(self, _table:str=None, _verify_all=False) -> bool:
         if _verify_all:
-            temp = self.cursor.execute(
+            temp:Union[tuple, bool] = tuple()
+            temp:tuple = self.cursor.execute(
                 f"SELECT name FROM sqlite_master WHERE type='table';").fetchone()
+            print(type(temp))
             if temp != None:
                 return True
             else: return False
@@ -84,8 +88,7 @@ class HandlerDB:
             return True
         else:
             return False
-
-
+    
     class ErrConnectDB(Exception):
         pass
 

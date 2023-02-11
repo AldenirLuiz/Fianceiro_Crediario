@@ -28,7 +28,7 @@ class Layout:
     def creatCard( pai:Widget, desc:str ):
         # container de disposicao da grade frm0
         label = Label(pai, text=desc.upper())
-        label.pack() # esta Label descreve o card
+        label.pack()
     # cria uma tarja de descricao acima do card quando solicitado   
     def descWidget( pai:Widget, descricao:str ):
         labelCobranca = Label(pai, text=descricao.upper(), anchor='center')
@@ -53,20 +53,17 @@ class Layout:
             
         # percorre as celulas presentes no pacote
         for desc, celula in celulas.items():
-            frm0 = Frame(pai, relief='groove', bd=2)
+            frm0 = Frame(pai, relief='flat', bd=2)
             Layout.creatCard(frm0, desc)
             # percorre os widgets presentes no pacote
             for widget in celula:
-                
                 # removendo caracteres desnecessarios
                 nome = str(widget).replace('\t', '')
-                #dataName = dict(data)[nome]
                 if dataFrames:
                     dataNames = dataFrames[nome]
                 else:
                     dataNames = ""
-
-                frm1 = Frame(frm0) # criando container da grade
+                frm1 = Frame(frm0, relief='groove') # criando container da grade
                 Layout.retStaticVar(frm1, str(widget).upper())
                 # filtro de tipo de widget para Entry
                 if tWid == 'entry':
@@ -76,7 +73,7 @@ class Layout:
                 frm1.pack(anchor='w', expand='yes', fill='both') # alocando do container da grade
             if subwidget: # aqui sera alocado um subwidget caso for solicitado.
                 Layout.subWidget(subwidget)
-            frm0.pack(side='left', expand='yes', fill='both')
+            frm0.pack(side='left', expand='yes', fill='both', padx=4, pady=4)
         # retorna os widgets configurados e enpacotados para uso
         return Layout.dictEntryWidget
     
