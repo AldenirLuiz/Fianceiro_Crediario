@@ -78,13 +78,12 @@ class HandlerDB:
             temp:Union[tuple, bool] = tuple()
             temp:tuple = self.cursor.execute(
                 f"SELECT name FROM sqlite_master WHERE type='table';").fetchone()
-            print(type(temp))
             if temp != None:
                 return True
             else: return False
         
-        temp_check_table = self.cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{_table}';").fetchone()
-        if temp_check_table != []:
+        temp_check_table:tuple = self.cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{_table}';").fetchone()
+        if temp_check_table != tuple():
             return True
         else:
             return False
