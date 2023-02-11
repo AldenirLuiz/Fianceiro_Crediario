@@ -12,6 +12,12 @@ class HandlerDB:
     __ROOT_DIR__:str = Diretorio()
     __DATABASE__:str = 'dadosCobranca.db'
 
+    _query_table_exists:str = "SELECT name FROM sqlite_master WHERE type='table';"
+    _query_table_check:str = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';"
+    _temp_query_columns:str = "PRAGMA table_info({})"
+    _request_data_from:str = "SELECT * FROM '{}'"
+    _error_code_table:str = "Tabela Inexistente"
+
     def __init__(self) -> None:
         try:
             self.banco:Connection = db.connect(
@@ -42,48 +48,40 @@ class HandlerDB:
 
 
     def queryRequestTables(self, _table:str=None, _last:bool=False) -> list:
-        
-        temp_request_table:str = "SELECT name FROM sqlite_master WHERE type='table';"
-        temp_request_data:str = f"SELECT * FROM '{_table}'"
 
         if _last:
             try:
-                temp:list = self.cursor.execute(temp_request_table).fetchall()
-                return temp
+                return self.cursor.execute(self._query_table_exists.format(_table)).fetchall()
             except db.Error as _erro:
                 raise _erro
 
         if not self.verifyTable(_table):
-            return "Tabela Inexistente"
+            return [self._error_code_table, _table]
         else:
             try:
-                temp:list = self.cursor.execute(temp_request_data)
-                return temp.fetchall()
+                return self.cursor.execute(self._request_data_from.format(_table)).fetchall()
             except db.Error as _erro:
                 raise _erro
     
 
     def queryRequestColumns(self, _table:str) -> list:
-        temp_query_columns:str = f"PRAGMA table_info({_table})"
-        
+
         if self.verifyTable(_table):
-            temp_data:list = self.cursor.execute(temp_query_columns).fetchall()
-            return [column[1] for column in temp_data]
+            return [
+                column[1] for column 
+                in self.cursor.execute(self._temp_query_columns.format(_table)).fetchall()]
         else:
-            return "Tabela Inexistente"
+            return [self._error_code_table, _table]
 
 
     def verifyTable(self, _table:str=None, _verify_all=False) -> bool:
+        
         if _verify_all:
-            temp:Union[tuple, bool] = tuple()
-            temp:tuple = self.cursor.execute(
-                f"SELECT name FROM sqlite_master WHERE type='table';").fetchone()
-            if temp != None:
+            if self.cursor.execute(self._query_table_exists.format(_table)).fetchall() != None:
                 return True
             else: return False
-        
-        temp_check_table:tuple = self.cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{_table}';").fetchone()
-        if temp_check_table != tuple():
+
+        if self.cursor.execute(self._query_table_check.format(_table)).fetchone() != tuple():
             return True
         else:
             return False
