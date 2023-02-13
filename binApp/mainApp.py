@@ -110,7 +110,6 @@ class SubGrade:
     def pack_widget(widget_name: Widget):
         return widget_name.pack(expand=1, fill='both', pady=2, padx=2, ipadx=2, ipady=2)
 
-
 class ViewCard:
     json_file: str = f"{Dir()}/cellNames.json"
     with open(json_file, "r") as cell_names:
