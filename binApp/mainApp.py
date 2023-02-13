@@ -51,7 +51,6 @@ class SubGrade:
         self.framePai0 = Frame(notebook)
         self.widgetPack.update(self.create_card(self.framePai0, self.tipoWidget, dados))
         self.framePai0.grid(row=1, column=0)
-        print(self.widgetPack)
 
         self.framePai4 = Frame(notebook, relief='groove')
         # OS WIDGETS DESTA FRAME SERAO POSTOS NA FUNCAO typeWidget
@@ -78,24 +77,38 @@ class SubGrade:
         button = Button(container, text=text, bg='orange')
         return button.pack(side='left', pady=2, ipadx=2, ipady=2)
 
-    def type_widget(self, sub_widget, dados=None):
+    def type_widget(self, sub_widget):
         # ESTA CONDICAO VERIFICA O TIPO DE WIDGET REQUERIDO
         if sub_widget == 'text':
-            return self.pack_widget(Text(self.framePai4, width=34, height=4))
+            return self.pack_widget(
+                widgets=[
+                    Text(self.framePai4, width=100, height=4),
+                    Label(self.framePai4, text='OBSERVACOES:'),
+                ]
+            )
+
         elif sub_widget == 'botao':  # Neste caso "botao" adiciona os
             # botoes no espaco reservado do layout
             self.frmBtt = Frame(self.framePai4)
-            self.pack_widget(Label(
-                self.frmBtt, text=self.message, fg='green', width=34, height=4))
+            self.pack_widget(
+                widgets=[
+                    Label(self.frmBtt, text=self.message, fg='green', width=34, height=4)],
+                type='pack')
 
-            self.subButonWid0 = Button(
-                self.frmBtt, text='Limpar Campos', bg='orange')
-            self.subButonWid0.pack(side='left', pady=2, ipadx=2, ipady=2)
-            self.subButonWid1 = Button(
-                self.frmBtt, text='Cadastrar Valores', bg='green')
-            self.subButonWid1.pack(side='right', pady=2, ipadx=2, ipady=2)
             self.widgetPack['btts'] = {
-                'btt1': self.subButonWid1, 'btt0': self.subButonWid0}
+                'btt0': Button(
+                    self.frmBtt, text='Limpar Campos', bg='orange'),
+                'btt1': Button(
+                    self.frmBtt, text='Cadastrar Valores', bg='green')}
+
+            self.pack_widget(
+                widgets=[
+                    self.frmBtt,
+                    self.widgetPack['btts']['btt0'],
+                    self.widgetPack['btts']['btt1']
+                ],
+            )
+            return self.widgetPack
             # Empacotando os widgets criados pela classe Layout
 
         else:  # por fim se nenhuma destes foi solicitado, o espaco reservado permanece vazio
@@ -107,8 +120,10 @@ class SubGrade:
         return self.widgetPack
 
     @staticmethod
-    def pack_widget(widget_name: Widget):
-        return widget_name.pack(expand=1, fill='both', pady=2, padx=2, ipadx=2, ipady=2)
+    def pack_widget(**kwargs):
+        for widget in kwargs.get('widgets'):
+            widget.pack(side='right', expand=1, fill='none',  pady=2, padx=2, ipadx=2, ipady=2)
+
 
 class ViewCard:
     json_file: str = f"{Dir()}/cellNames.json"
