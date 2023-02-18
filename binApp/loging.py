@@ -18,7 +18,7 @@ class Logger:
             logging.info("Python version: {}".format(sys.version))
             logging.info("Current directory contents: {}".format(os.listdir(".")))
         
-    def retTextApp():
+    def retTextApp(self):
         temp_text = ''
         with open(logging.getLogger().handlers[0].baseFilename, "r") as text_read:
             for line in text_read:

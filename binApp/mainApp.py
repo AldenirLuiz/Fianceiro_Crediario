@@ -1,17 +1,22 @@
 from tkinter import *
 from tkinter import ttk
 from binApp.mainLayout import Layout
+from binApp.dataHandler import HandlerDB
 import json
 from binApp.manageDir import Diretorio as Dir
 
 
 class Janela:
+
     def __init__(self) -> None:
         self.window = Tk()
         # self.window.geometry('560x600')
         self.window.anchor('center')
         self.frameLogin = Frame(self.window, relief='flat')
         self.frameLogin.pack(expand=1, fill='both', anchor='center')
+
+
+
         self.noteBook = ttk.Notebook(self.frameLogin, padding=8)
         self.noteBook.pack(expand=1, fill='both', anchor='center')
 
@@ -19,6 +24,7 @@ class Janela:
         self.widgets = dict()  # acesesso: self.widgets['nome do widget']
         # noteNomes: lista os nomes para nomear as abas do notebook.
         self.noteNomes = ['Cobrancas', 'Rotas', 'Cadastros', 'Historico']
+        self.functional_widgets = ['entrada', 'botao_entrada']
         # valEntrys: este container guardara as entrys para acesso posterior.
         self.valEntry = dict()
         # percorre os nomes predefinidos em noteNomes, cada nome sera uma aba
@@ -38,21 +44,23 @@ class SubGrade:
 
     def __init__(self, notebook, t_widget, dados=None) -> None:
 
-        self.subButonWid1 = None
-        self.subButonWid0 = None
-        self.subCellWid = None
-        self.frmBtt = None
         self.tipoWidget = t_widget
         self.widgetPack = dict()
         self.vtext = dados
+        self.data_obj = ['Campina', 'Itaporanga']
+        if dados:
+            self.data_obj = dados.keys()
         self.view = ViewCard()
 
         # Frame dos cards
         self.framePai0 = Frame(notebook)
+        self.get_table_names = Menu(self.framePai0, )
+        # self.get_table_names.pack()
         self.widgetPack.update(self.create_card(self.framePai0, self.tipoWidget, dados))
         self.framePai0.grid(row=1, column=0)
 
         self.framePai4 = Frame(notebook, relief='groove')
+
         # OS WIDGETS DESTA FRAME SERAO POSTOS NA FUNCAO typeWidget
         self.framePai4.grid(row=4, column=0, )
 
@@ -70,6 +78,7 @@ class SubGrade:
                         tWid=widget_type,
                         desc=str(_card).lower(),
                         data=_data))
+
         return dict_widgets
 
     @staticmethod
@@ -89,21 +98,21 @@ class SubGrade:
 
         elif sub_widget == 'botao':  # Neste caso "botao" adiciona os
             # botoes no espaco reservado do layout
-            self.frmBtt = Frame(self.framePai4)
+            frm_btt = Frame(self.framePai4)
             self.pack_widget(
                 widgets=[
-                    Label(self.frmBtt, text=self.message, fg='green', width=34, height=4)],
+                    Label(frm_btt, text=self.message, fg='green', width=34, height=4)],
                 type='pack')
 
             self.widgetPack['btts'] = {
                 'btt0': Button(
-                    self.frmBtt, text='Limpar Campos', bg='orange'),
+                    frm_btt, text='Limpar Campos', bg='orange'),
                 'btt1': Button(
-                    self.frmBtt, text='Cadastrar Valores', bg='green')}
+                    frm_btt, text='Cadastrar Valores', bg='green')}
 
             self.pack_widget(
                 widgets=[
-                    self.frmBtt,
+                    frm_btt,
                     self.widgetPack['btts']['btt0'],
                     self.widgetPack['btts']['btt1']
                 ],
@@ -122,7 +131,7 @@ class SubGrade:
     @staticmethod
     def pack_widget(**kwargs):
         for widget in kwargs.get('widgets'):
-            widget.pack(side='right', expand=1, fill='none',  pady=2, padx=2, ipadx=2, ipady=2)
+            widget.pack(side='right', expand=1, fill='none', pady=2, padx=2, ipadx=2, ipady=2)
 
 
 class ViewCard:
