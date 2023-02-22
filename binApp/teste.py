@@ -1,26 +1,26 @@
 import sqlite3
 from sqlite3 import Error
-from random import randint, choice
+from random import randint
 
 banco = 'dadosCobranca.db'
 conn = sqlite3.connect(banco)
 cursor = conn.cursor()
 
 
-cityNames = ["Campina", "Patos", "Itaporanga", "Juazeirinho", "Brejo",]
+cityNames = ["Campina", "Patos", "Itaporanga", "Juazeirinho", "Brejo"]
 dictDados = dict()
 
 
-def gerBanco(**kwargs):
+def ger_banco(**kwargs):
 
-    nTable = f"{kwargs.get('nome da rota:')}{kwargs.get('data da rota:')}"
+    table_name = f"{kwargs.get('nome da rota:')}{kwargs.get('data da rota:')}"
     try:
-        cursor.execute(f"CREATE TABLE {nTable} {tuple(kwargs.keys())}")
-        cursor.execute(f"INSERT INTO {nTable} VALUES{tuple(kwargs.values())}")
+        cursor.execute(f"CREATE TABLE {table_name} {tuple(kwargs.keys())}")
+        cursor.execute(f"INSERT INTO {table_name} VALUES{tuple(kwargs.values())}")
         conn.commit()
     except Error as erro:
         print(erro)
-        cursor.execute(f"INSERT INTO {nTable} VALUES{tuple(kwargs.values())}")
+        cursor.execute(f"INSERT INTO {table_name} VALUES{tuple(kwargs.values())}")
         conn.commit()
 
 
@@ -53,5 +53,4 @@ if __name__ == '__main__':
             'despesa rota:': f'{randint(600, 1000)}',
             'despesa extra:': f'{randint(0, 1000)}'}
         tempString.update(dictDados)
-        gerBanco(**tempString)
-
+        ger_banco(**tempString)

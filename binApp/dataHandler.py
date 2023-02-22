@@ -45,13 +45,8 @@ class HandlerDB:
         else:
             return f"A tabela {_table_} ja existe no banco de dados!"
 
-    def query_request_tables(self, _table: str = None, _last: bool = False) -> list:
-
-        if _last:
-            try:
-                return self.cursor.execute(self._query_table_exists.format(_table)).fetchall()
-            except db.Error as _erro:
-                raise _erro
+    def query_request_tables(self, _table: str = None) -> list:
+        print(f"query request: {_table}")
 
         if not self.verify_tables(_table):
             return [self._error_code_table, _table]
@@ -71,11 +66,12 @@ class HandlerDB:
             return [self._error_code_table, _table]
 
     def verify_tables(self, _table: str) -> bool:
+
         _query_check = self.cursor.execute(self._query_table_check.format(_table)).fetchall()
-        if _query_check != tuple():
-            return True
-        else:
+        if _query_check != list():
             return False
+        else:
+            return True
 
     def check_table(self):
         _query_exists = self.cursor.execute(self._query_table_exists).fetchall()
@@ -91,9 +87,9 @@ class HandlerDB:
 if __name__ == "__main__":
     from teste import dictDados
     hand = HandlerDB()
-    # print(hand.verifyTable('Campina'))
+    print(hand.verify_tables('Itaporanga28_2_2023'))
     # print(Diretorio.retWayFile('dataBase', 'dadosCobranca.db'))
-    print(hand.query_add(dictDados))
+    # print(hand.query_add(dictDados))
     # temp = hand.queryRequestTables(_table='Campina21_07_2022', _last=False)
     # print(temp)
     # table = hand.queryRequestTables(_last=True)

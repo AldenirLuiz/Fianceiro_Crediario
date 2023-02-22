@@ -22,12 +22,12 @@ class LastTable(HandlerDB):
             Log.retListApp(str(_erro))
 
     def query_data(self, table):
+        print(f"query_data/table: {table}")
         try:
             if self.check_table():
-                table_request: list = self.query_request_tables(table)
-                keys_request: list = self.query_request_columns(table_request[-1][0])
-                data_request: list = self.query_request_tables(_table=table_request[-1][0])
-                values = dict(zip(keys_request, data_request))
+                values_request: list = self.query_request_tables(table)
+                keys_request: list = self.query_request_columns(table)
+                values = dict(zip(keys_request, values_request[0]))
                 return values
 
         except IndexError as _erro:
@@ -56,8 +56,9 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
         self.db = HandlerDB()
         self.tables = self.db.check_table()
         for table in self.tables:
+            print(f"table_init: {table}")
             self.filemenu.add_command(
-                label=table[0], command=lambda x=table: self.comand_menu(x)
+                label=table[0], command=lambda x=f'{table[0]}': self.comand_menu(x)
             )
             self.filemenu.add_separator()
         self.window.configure(menu=self.menubar)
@@ -75,7 +76,8 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
             command=lambda: self.command_delete())
 
     def comand_menu(self, table_name):
-        query = self.dataQuery.query_data(str(table_name))
+        query = self.dataQuery.query_data(f'{table_name}')
+        print(f"command menu: {query}")
         self.janelaCob = SubGrade(
             self.widgets['Cobrancas'], 'label', query)
 
