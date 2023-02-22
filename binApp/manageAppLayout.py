@@ -13,16 +13,19 @@ class LastTable(HandlerDB):
         self.values = dictDados
         try:
             if self.check_table():
-                self.tableRequest: list = self.query_request_tables(_last=True)
-                self.keysRequest: list = self.query_request_columns(self.tableRequest[-1][0])
-                self.dataRequest: list = self.query_request_tables(_table=self.tableRequest[-1][0])
+                self.tableRequest: str = self.check_table()[-1][0]
+                # print(f"tableRequest: {self.tableRequest}")
+                self.keysRequest: list = self.query_request_columns(_table=self.tableRequest)
+                # print(f"keysRequest: {self.keysRequest}")
+                self.dataRequest: list = self.query_request_tables(_table=self.tableRequest)
+                # print(f"dataRequest: {self.dataRequest[0]}")
                 self.values = dict(zip(self.keysRequest, self.dataRequest[0]))
             
         except IndexError as _erro:
             Log.retListApp(str(_erro))
 
     def query_data(self, table):
-        print(f"query_data/table: {table}")
+        # print(f"query_data/table: {table}")
         try:
             if self.check_table():
                 values_request: list = self.query_request_tables(table)
@@ -55,13 +58,6 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
         )
         self.db = HandlerDB()
         self.tables = self.db.check_table()
-        for table in self.tables:
-            print(f"table_init: {table}")
-            self.filemenu.add_command(
-                label=table[0], command=lambda x=f'{table[0]}': self.comand_menu(x)
-            )
-            self.filemenu.add_separator()
-        self.window.configure(menu=self.menubar)
 
         self.valText = self.janelaCob.type_widget('text')
 
@@ -74,12 +70,30 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
             command=lambda: self.colect_data())
         self.valEntry['btts']['btt0'].configure(
             command=lambda: self.command_delete())
+        self.refresh_menu()
 
     def comand_menu(self, table_name):
         query = self.dataQuery.query_data(f'{table_name}')
-        print(f"command menu: {query}")
+        # print(f"command menu: {query}")
         self.janelaCob = SubGrade(
             self.widgets['Cobrancas'], 'label', query)
+        self.refresh_menu()
+
+    def refresh_menu(self):
+        self.menubar = Menu(self.frameLogin)
+        self.filemenu = Menu(self.menubar, tearoff=0)
+        self.editmenu = Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(
+            label="ROTAS", menu=self.filemenu, command=self.comand_menu
+        )
+        self.tables = self.db.check_table()
+        for table in self.tables:
+            # print(f"table_init: {table}")
+            self.filemenu.add_command(
+                label=table[0], command=lambda x=f'{table[0]}': self.comand_menu(x)
+            )
+            self.filemenu.add_separator()
+        self.window.configure(menu=self.menubar)
 
     def command_delete(self) -> None:
         for keyWidget in self.valEntry.keys():
@@ -98,7 +112,7 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
 
     def data_save(self, values) -> None:
         query_state = self.dataQuery.query_add(_data=values)
-
+        self.refresh_menu()
         if query_state != 'dados inseridos':
             tkinter.messagebox.showwarning(
                 title="ATENÇÃO!",
@@ -110,7 +124,7 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
                 message=f'{query_state}'
             )
 
-        
+
 if __name__ == "__main__":
     temp = LastTable()
     print(temp)

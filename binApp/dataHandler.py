@@ -36,7 +36,7 @@ class HandlerDB:
         temp_table_create: str = f"CREATE TABLE {_table_} {tuple(_data.keys())};"
         temp_data_adict: str = f"INSERT INTO {_table_} VALUES{tuple(_data.values())};"
 
-        if self.verify_tables(_table=_table_):
+        if not self.verify_tables(_table=_table_):
             self.cursor.execute(temp_table_create)
             self.banco.commit()
             self.cursor.execute(temp_data_adict)
@@ -46,7 +46,7 @@ class HandlerDB:
             return f"A tabela {_table_} ja existe no banco de dados!"
 
     def query_request_tables(self, _table: str = None) -> list:
-        print(f"query request: {_table}")
+        # print(f"query request: {_table}")
 
         if not self.verify_tables(_table):
             return [self._error_code_table, _table]
@@ -59,9 +59,15 @@ class HandlerDB:
     def query_request_columns(self, _table: str) -> list:
 
         if self.verify_tables(_table):
-            return [
-                column[1] for column 
-                in self.cursor.execute(self._temp_query_columns.format(_table)).fetchall()]
+            columns: list = [
+                table[1]
+                for table
+                in self.cursor.execute(
+                    self._temp_query_columns.format(_table)
+                ).fetchall()
+            ]
+            # print(f"columns: {columns}")
+            return columns
         else:
             return [self._error_code_table, _table]
 
@@ -69,12 +75,13 @@ class HandlerDB:
 
         _query_check = self.cursor.execute(self._query_table_check.format(_table)).fetchall()
         if _query_check != list():
-            return False
-        else:
             return True
+        else:
+            return False
 
     def check_table(self):
         _query_exists = self.cursor.execute(self._query_table_exists).fetchall()
+        # print(_query_exists)
         if _query_exists:
             return _query_exists
         else:
@@ -85,7 +92,7 @@ class HandlerDB:
 
 
 if __name__ == "__main__":
-    from teste import dictDados
+    # from teste import dictDados
     hand = HandlerDB()
     print(hand.verify_tables('Itaporanga28_2_2023'))
     # print(Diretorio.retWayFile('dataBase', 'dadosCobranca.db'))

@@ -15,8 +15,6 @@ class Janela:
         self.frameLogin = Frame(self.window, relief='flat')
         self.frameLogin.pack(expand=1, fill='both', anchor='center')
 
-
-
         self.noteBook = ttk.Notebook(self.frameLogin, padding=8)
         self.noteBook.pack(expand=1, fill='both', anchor='center')
 
