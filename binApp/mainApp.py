@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 from binApp.mainLayout import Layout
-from binApp.dataHandler import HandlerDB
 import json
 from binApp.manageDir import Diretorio as Dir
 
@@ -12,10 +11,11 @@ class Janela:
         self.window = Tk()
         # self.window.geometry('560x600')
         self.window.anchor('center')
-        self.frameLogin = Frame(self.window, relief='flat')
-        self.frameLogin.pack(expand=1, fill='both', anchor='center')
+        self.window_root = Canvas(self.window)
+        self.window_root.pack(expand=1, fill='both', anchor='center')
+        self.window_root.configure(scrollregion=self.window_root.bbox("all"))
 
-        self.noteBook = ttk.Notebook(self.frameLogin, padding=8)
+        self.noteBook = ttk.Notebook(self.window_root, padding=8)
         self.noteBook.pack(expand=1, fill='both', anchor='center')
 
         # widgets: este container guardara os frames do notebook para acesso posterior
@@ -67,13 +67,13 @@ class SubGrade:
         for _card in self.view.layers_:
             frame = Frame(container)
             if _card != 'notebookNames':
-                _temp: list = self.view.ret_card(_card)
+                _temp: dict = self.view.ret_card(_card)
                 frame.pack()
                 dict_widgets.update(
-                    Layout.creatLay(
+                    Layout.creat_lay(
                         pai=frame,
                         celulas=_temp,
-                        tWid=widget_type,
+                        type_wid=widget_type,
                         desc=str(_card).lower(),
                         data=_data))
 
@@ -120,8 +120,8 @@ class SubGrade:
 
         else:  # por fim se nenhuma destes foi solicitado, o espaco reservado permanece vazio
             # Empacotando os widgets criados pela classe Layout
-            lay2 = Layout.creatLay(self.framePai4, self.view.ret_card("celNomesL4"),
-                                   tWid=self.tipoWidget)
+            lay2 = Layout.creat_lay(self.framePai4, self.view.ret_card("celNomesL4"),
+                                    type_wid=self.tipoWidget)
             self.widgetPack.update(lay2)
         # por fim o configurador retorna os devidos widgets empacotados em self.widgetPack.
         return self.widgetPack

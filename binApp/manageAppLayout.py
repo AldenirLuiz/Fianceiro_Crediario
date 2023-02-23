@@ -50,7 +50,7 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
         
         self.janelaCob = SubGrade(self.widgets['Cobrancas'], 'label', dados=self.last_data)
 
-        self.menubar = Menu(self.frameLogin)
+        self.menubar = Menu(self.window_root)
         self.filemenu = Menu(self.menubar, tearoff=0)
         self.editmenu = Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(
@@ -80,7 +80,7 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
         self.refresh_menu()
 
     def refresh_menu(self):
-        self.menubar = Menu(self.frameLogin)
+        self.menubar = Menu(self.window_root)
         self.filemenu = Menu(self.menubar, tearoff=0)
         self.editmenu = Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(
