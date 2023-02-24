@@ -38,7 +38,8 @@ class Janela:
 
 # ESTA CLASSE E RESPONSAVEL POR CRIAR UMA GRADE DINAMICA DE |FRAMES|WIDGETS|
 class SubGrade:
-    message = 'VERIFIQUE OS DADOS ANTES \nDE SALVAR.'
+    message: str = 'VERIFIQUE OS DADOS ANTES \nDE SALVAR.'
+    exclude: list = ['notebookNames']
 
     def __init__(self, notebook, t_widget, dados=None) -> None:
 
@@ -63,10 +64,12 @@ class SubGrade:
         self.framePai4.grid(row=4, column=0, )
 
     def create_card(self, container, widget_type, _data=None):
+        if widget_type != 'label':
+            self.exclude.insert(0, 'total')
         dict_widgets = dict()
         for _card in self.view.layers_:
             frame = Frame(container)
-            if _card != 'notebookNames':
+            if _card not in self.exclude:
                 _temp: dict = self.view.ret_card(_card)
                 frame.pack()
                 dict_widgets.update(

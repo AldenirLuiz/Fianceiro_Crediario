@@ -13,13 +13,11 @@
     "celNomesL1" : {
         "cobranca":[
             "saldo cobrado:", 
-            "repasse cobrado:", 
-            "total cobrado:"],
+            "repasse cobrado:"],
 
         "capital de giro":[
             "venda anterior:", 
-            "devolucao de rua:", 
-            "total vendido:"]
+            "devolucao de rua:"]
     },
 
     "celNomesL2" : {
@@ -27,21 +25,20 @@
             "repasse novo:", 
             "repasse total:"],
         "deposito":[
-            "compra deposito:", 
-            "entrega deposito:"]
+            "compra deposito:"]
     },
 
     "celNomesL3" : {
         "fichas":[
             "fichas novas:", 
             "fichas repasse:", 
-            "fichas em branco:", 
-            "total fichas:"], 
+            "fichas em branco:"
+        ],
         "mercadoria na rua":[
             "venda nova:", 
             "brindes:", 
-            "vl fichas branco:", 
-            "total na rua:"]
+            "vl fichas branco:"
+        ]
     },
     "celNomesL4" : {
         "despesas":[
@@ -49,6 +46,17 @@
             "despesa extra:"
         ]
     },
+
+    "total": {
+        "cauculados": [
+            "total cobrado:",
+            "total fichas:",
+            "total vendido:",
+            "total na rua:",
+            "entrega deposito:"
+        ]
+    },
+
     "notebookNames":{
         "noteNomes": [
             "Cobrancas", 

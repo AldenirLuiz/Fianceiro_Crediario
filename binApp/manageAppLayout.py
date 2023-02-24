@@ -1,9 +1,18 @@
 import tkinter.messagebox
 from tkinter import *
-from .dataHandler import HandlerDB
-from .teste import dictDados
-from .mainApp import Janela, SubGrade, Layout
-from .loging import Logger as Log
+
+try:
+    from .dataHandler import HandlerDB
+    from .teste import dict_dados
+    from .mainApp import Janela, SubGrade, Layout
+    from .loging import Logger as Log
+except:
+    from dataHandler import HandlerDB
+    from teste import dict_dados
+    from mainApp import Janela, SubGrade, Layout
+    from loging import Logger as Log
+
+dictDados = dict_dados()
 
 
 class LastTable(HandlerDB):
@@ -110,8 +119,13 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
                 dict_values[keyWidget] = widget_text
         self.data_save(dict_values)
 
+    def process_data(self, _data):
+
+        pass
+
     def data_save(self, values) -> None:
-        query_state = self.dataQuery.query_add(_data=values)
+        data_prepare = DataModel(**values)
+        query_state = self.dataQuery.query_add(_data=data_prepare.ret_values())
         self.refresh_menu()
         if query_state != 'dados inseridos':
             tkinter.messagebox.showwarning(
@@ -125,6 +139,49 @@ class Manipulador(Janela, SubGrade, Layout, LastTable):
             )
 
 
+class DataModel:
+    def __init__(self, **kwargs) -> None:
+        self.pacckage: dict = kwargs
+
+        self.pacckage.update({
+            'total cobrado:': int(
+                int(kwargs.get('saldo cobrado:')) +
+                int(kwargs.get('repasse cobrado:'))
+            ),
+            'total fichas:': int(
+                int(kwargs.get('fichas novas:')) +
+                int(kwargs.get('fichas repasse:')) +
+                int(kwargs.get('fichas em branco:'))
+            ),
+            'total vendido:': int(
+                int(kwargs.get('venda anterior:')) -
+                int(kwargs.get('devolucao de rua:'))
+            ),
+            'total na rua:': int(
+                int(kwargs.get('venda nova:')) +
+                int(kwargs.get('vl fichas branco:')) +
+                int(kwargs.get('brindes:'))
+            ),
+            'mercadoria': int(
+                int(kwargs.get('compra deposito:')) +
+                int(kwargs.get('devolucao de rua:'))
+            )
+        })
+        self.pacckage.update({
+            'entrega deposito':
+                self.pacckage['mercadoria'] - self.pacckage['total na rua:']
+        })
+
+    def ret_values(self) -> dict:
+        return self.pacckage
+
+    def __repr__(self) -> str:
+        return f'DataModel({self.pacckage})'
+
+
 if __name__ == "__main__":
-    temp = LastTable()
-    print(temp)
+    # temp = LastTable()
+    data = dictDados
+    temp = DataModel(**data['Campina'])
+
+    print(temp.ret_values())
